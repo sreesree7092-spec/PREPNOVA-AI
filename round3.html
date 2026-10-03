@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Round 3 - AI HR Interview | PREPNOVA AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #312e81, #581c87);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #d8b4fe;
+        }
+
+        .round {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 18px;
+            border-radius: 20px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 35px auto;
+        }
+
+        .candidate {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .candidate h1 {
+            margin-bottom: 8px;
+        }
+
+        .candidate p {
+            color: #ddd6fe;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #c084fc;
+            transition: 0.4s;
+        }
+
+        .interviewer {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+        }
+
+        .avatar {
+            width: 75px;
+            height: 75px;
+            margin: auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            box-shadow: 0 0 25px rgba(168,85,247,0.5);
+        }
+
+        .interviewer h2 {
+            margin-top: 15px;
+        }
+
+        .question {
+            font-size: 22px;
+            line-height: 1.5;
+            margin: 25px 0;
+            color: #f5f3ff;
+        }
+
+        .status {
+            color: #c4b5fd;
+            margin: 15px 0;
+            min-height: 24px;
+        }
+
+        .timer {
+            font-size: 25px;
+            font-weight: bold;
+            margin: 15px;
+            color: #f0abfc;
+        }
+
+        .mic-button {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: none;
+            background: #9333ea;
+            color: white;
+            font-size: 38px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 8px 25px rgba(147,51,234,0.4);
+        }
+
+        .mic-button:hover {
+            transform: scale(1.06);
+            background: #a855f7;
+        }
+
+        .mic-button.listening {
+            background: #dc2626;
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220,38,38,0.6);
+            }
+
+            70% {
+                box-shadow: 0 0 0 20px rgba(220,38,38,0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(220,38,38,0);
+            }
+        }
+
+        .transcript-box {
+            margin-top: 25px;
+            background: rgba(0,0,0,0.25);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: left;
+            min-height: 120px;
+        }
+
+        .transcript-title {
+            color: #d8b4fe;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #transcript {
+            color: #e9d5ff;
+            line-height: 1.6;
+        }
+
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            padding: 13px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .next-btn {
+            background: #7c3aed;
+        }
+
+        .next-btn:hover {
+            background: #6d28d9;
+        }
+
+        .repeat-btn {
+            background: #475569;
+        }
+
+        .repeat-btn:hover {
+            background: #334155;
+        }
+
+        .finish-btn {
+            background: #059669;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* RESULT */
+
+        .result {
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 35px;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid #c084fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 25px auto;
+            font-size: 38px;
+            font-weight: bold;
+        }
+
+        .result-card {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .result-card p {
+            color: #ddd6fe;
+            line-height: 1.6;
+        }
+
+        .home-btn {
+            margin-top: 25px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 25px;
+            background: #a855f7;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .warning {
+            color: #fca5a5;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="logo">PREPNOVA AI</div>
+    <div class="round">ROUND 3 • HR INTERVIEW</div>
+</div>
+
+<div class="container">
+
+    <div class="candidate">
+        <h1>AI-Powered HR Interview</h1>
+
+        <p>
+            Welcome, <strong>{{ name }}</strong> |
+            Department: <strong>{{ department }}</strong>
+        </p>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- INTERVIEW SCREEN -->
+
+    <div id="interviewScreen">
+
+        <div class="interviewer">
+
+            <div class="avatar">
+                🤖
+            </div>
+
+            <h2>AI Interviewer</h2>
+
+            <div class="question" id="question">
+                Click "Start Interview" to begin.
+            </div>
+
+            <div class="timer" id="timer">
+                60
+            </div>
+
+            <div class="status" id="status">
+                Ready for your interview.
+            </div>
+
+            <button
+                class="mic-button"
+                id="micButton"
+                onclick="toggleListening()"
+                disabled
+            >
+                🎙️
+            </button>
+
+            <div class="warning">
+                Allow microphone permission when your browser asks.
+            </div>
+
+            <div class="transcript-box">
+
+                <div class="transcript-title">
+                    Your Answer
+                </div>
+
+                <div id="transcript">
+                    Your spoken answer will appear here...
+                </div>
+
+            </div>
+
+            <div class="controls">
+
+                <button
+                    class="btn repeat-btn"
+                    onclick="repeatQuestion()"
+                >
+                    🔊 Repeat Question
+                </button>
+
+                <button
+                    class="btn next-btn"
+                    onclick="nextQuestion()"
+                >
+                    Next Question ➜
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- START SCREEN -->
+
+    <div id="startScreen">
+
+        <div class="interviewer">
+
+            <div class="avatar">
+                🤖
+            </div>
+
+            <h2>Ready for your HR Interview?</h2>
+
+            <p style="color:#ddd6fe; line-height:1.7;">
+
+                This round evaluates your spoken responses
+                and interview communication.
+
+                <br><br>
+
+                🎤 Speak clearly<br>
+                ⏱️ You have 60 seconds for each question<br>
+                🤖 AI interviewer will ask each question
+
+            </p>
+
+            <button
+                class="btn next-btn"
+                onclick="startInterview()"
+            >
+                🚀 Start Interview
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULT SCREEN -->
+
+    <div id="resultScreen" class="hidden">
+
+        <div class="result">
+
+            <h1>🎉 Interview Completed</h1>
+
+            <p>
+                Great job, <strong>{{ name }}</strong>!
+            </p>
+
+            <div class="score-circle">
+                <span id="overallScore">0</span>
+            </div>
+
+            <h2>Communication Score</h2>
+
+            <div class="result-card">
+
+                <h3>🗣️ Speech Response</h3>
+
+                <p id="speechResult">
+                    -
+                </p>
+
+            </div>
+
+            <div class="result-card">
+
+                <h3>📝 Answer Completeness</h3>
+
+                <p id="answerResult">
+                    -
+                </p>
+
+            </div>
+
+            <div class="result-card">
+
+                <h3>💼 Professional Communication</h3>
+
+                <p id="professionalResult">
+                    -
+                </p>
+
+            </div>
+
+            <div class="result-card">
+
+                <h3>🤖 AI Feedback</h3>
+
+                <p id="feedback">
+                    -
+                </p>
+
+            </div>
+
+            <button
+                class="home-btn"
+                onclick="goToRounds()"
+            >
+                🏠 Back to Rounds
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // =========================================
+    // HR QUESTIONS
+    // =========================================
+
+    const questions = [
+
+        "Tell me about yourself.",
+
+        "Why should we hire you for this role?",
+
+        "What are your strengths and how do they help you professionally?",
+
+        "Tell me about a challenge you faced and how you handled it.",
+
+        "Where do you see yourself in the next five years?",
+
+        "How do you handle pressure or deadlines?",
+
+        "Tell me about a project that you are proud of.",
+
+        "How do you handle criticism or negative feedback?",
+
+        "Why do you want to start your career in this field?",
+
+        "Do you have any questions for the interviewer?"
+
+    ];
+
+
+    // =========================================
+    // VARIABLES
+    // =========================================
+
+    let currentQuestion = 0;
+
+    let timeLeft = 60;
+
+    let timerInterval = null;
+
+    let isListening = false;
+
+    let answers = [];
+
+    let currentTranscript = "";
+
+
+    // =========================================
+    // SPEECH RECOGNITION
+    // =========================================
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    let recognition = null;
+
+
+    if (SpeechRecognition) {
+
+        recognition = new SpeechRecognition();
+
+        recognition.continuous = true;
+
+        recognition.interimResults = true;
+
+        recognition.lang = "en-IN";
+
+
+        recognition.onstart = function() {
+
+            isListening = true;
+
+            document
+                .getElementById("micButton")
+                .classList.add("listening");
+
+            document.getElementById("status").innerText =
+                "🎙️ Listening... Speak now.";
+
+        };
+
+
+        recognition.onresult = function(event) {
+
+            let finalText = "";
+
+            let interimText = "";
+
+            for (
+                let i = event.resultIndex;
+                i < event.results.length;
+                i++
+            ) {
+
+                const text =
+                    event.results[i][0].transcript;
+
+                if (event.results[i].isFinal) {
+
+                    finalText += text + " ";
+
+                } else {
+
+                    interimText += text;
+
+                }
+
+            }
+
+
+            if (finalText) {
+
+                currentTranscript += finalText;
+
+            }
+
+
+            document.getElementById("transcript").innerText =
+                currentTranscript + interimText;
+
+        };
+
+
+        recognition.onerror = function(event) {
+
+            console.log("Speech recognition error:", event.error);
+
+            document.getElementById("status").innerText =
+                "⚠️ Microphone error. Please try again.";
+
+        };
+
+
+        recognition.onend = function() {
+
+            isListening = false;
+
+            document
+                .getElementById("micButton")
+                .classList.remove("listening");
+
+        };
+
+    } else {
+
+        document.getElementById("status").innerText =
+            "Speech recognition is not supported. Please use Google Chrome.";
+
+    }
+
+
+    // =========================================
+    // START INTERVIEW
+    // =========================================
+
+    function startInterview() {
+
+        document.getElementById("startScreen")
+            .classList.add("hidden");
+
+        document.getElementById("interviewScreen")
+            .classList.remove("hidden");
+
+        document.getElementById("micButton")
+            .disabled = false;
+
+        currentQuestion = 0;
+
+        answers = [];
+
+        showQuestion();
+
+    }
+
+
+    // =========================================
+    // SHOW QUESTION
+    // =========================================
+
+    function showQuestion() {
+
+        if (currentQuestion >= questions.length) {
+
+            finishInterview();
+
+            return;
+
+        }
+
+
+        const question =
+            questions[currentQuestion];
+
+
+        document.getElementById("question")
+            .innerText = question;
+
+
+        document.getElementById("transcript")
+            .innerText =
+            "Your spoken answer will appear here...";
+
+
+        currentTranscript = "";
+
+
+        document.getElementById("progress")
+            .style.width =
+            ((currentQuestion) /
+            questions.length * 100) + "%";
+
+
+        startTimer();
+
+
+        speakQuestion(question);
+
+    }
+
+
+    // =========================================
+    // AI INTERVIEWER VOICE
+    // =========================================
+
+    function speakQuestion(text) {
+
+        if ("speechSynthesis" in window) {
+
+            window.speechSynthesis.cancel();
+
+            const speech =
+                new SpeechSynthesisUtterance(text);
+
+            speech.lang = "en-IN";
+
+            speech.rate = 0.9;
+
+            speech.pitch = 1;
+
+            window.speechSynthesis.speak(speech);
+
+        }
+
+    }
+
+
+    // =========================================
+    // REPEAT QUESTION
+    // =========================================
+
+    function repeatQuestion() {
+
+        speakQuestion(
+            questions[currentQuestion]
+        );
+
+    }
+
+
+    // =========================================
+    // MICROPHONE
+    // =========================================
+
+    function toggleListening() {
+
+        if (!recognition) {
+
+            alert(
+                "Speech recognition is not supported in this browser. Please use Google Chrome."
+            );
+
+            return;
+
+        }
+
+
+        if (isListening) {
+
+            recognition.stop();
+
+            document.getElementById("status")
+                .innerText =
+                "⏸️ Recording stopped.";
+
+        } else {
+
+            try {
+
+                recognition.start();
+
+            } catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+    }
+
+
+    // =========================================
+    // TIMER
+    // =========================================
+
+    function startTimer() {
+
+        clearInterval(timerInterval);
+
+        timeLeft = 60;
+
+        document.getElementById("timer")
+            .innerText = timeLeft;
+
+
+        timerInterval = setInterval(function() {
+
+            timeLeft--;
+
+            document.getElementById("timer")
+                .innerText = timeLeft;
+
+
+            if (timeLeft <= 0) {
+
+                clearInterval(timerInterval);
+
+                if (isListening && recognition) {
+
+                    recognition.stop();
+
+                }
+
+                nextQuestion();
+
+            }
+
+        }, 1000);
+
+    }
+
+
+    // =========================================
+    // NEXT QUESTION
+    // =========================================
+
+    function nextQuestion() {
+
+        clearInterval(timerInterval);
+
+
+        if (isListening && recognition) {
+
+            recognition.stop();
+
+        }
+
+
+        answers.push(
+            currentTranscript.trim()
+        );
+
+
+        currentQuestion++;
+
+        showQuestion();
+
+    }
+
+
+    // =========================================
+    // FINISH INTERVIEW
+    // =========================================
+
+    function finishInterview() {
+
+        clearInterval(timerInterval);
+
+
+        if (recognition && isListening) {
+
+            recognition.stop();
+
+        }
+
+
+        document.getElementById("interviewScreen")
+            .classList.add("hidden");
+
+
+        document.getElementById("resultScreen")
+            .classList.remove("hidden");
+
+
+        document.getElementById("progress")
+            .style.width = "100%";
+
+
+        calculateResult();
+
+
+        // Tell Flask that Round 3 is completed
+
+        fetch("/round3-complete", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            }
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            console.log(
+                "Round 3 completed:",
+                data
+            );
+
+        })
+
+        .catch(error => {
+
+            console.log(
+                "Completion error:",
+                error
+            );
+
+        });
+
+    }
+
+
+    // =========================================
+    // BASIC RESULT CALCULATION
+    // =========================================
+
+    function calculateResult() {
+
+        let totalWords = 0;
+
+        let answered = 0;
+
+
+        answers.forEach(function(answer) {
+
+            if (answer.length > 0) {
+
+                answered++;
+
+                totalWords +=
+                    answer.split(/\s+/).length;
+
+            }
+
+        });
+
+
+        let averageWords = 0;
+
+
+        if (answered > 0) {
+
+            averageWords =
+                Math.round(
+                    totalWords / answered
+                );
+
+        }
+
+
+        let score = 0;
+
+
+        if (averageWords >= 80) {
+
+            score = 90;
+
+        } else if (averageWords >= 60) {
+
+            score = 80;
+
+        } else if (averageWords >= 40) {
+
+            score = 70;
+
+        } else if (averageWords >= 20) {
+
+            score = 60;
+
+        } else if (averageWords > 0) {
+
+            score = 50;
+
+        } else {
+
+            score = 0;
+
+        }
+
+
+        document.getElementById("overallScore")
+            .innerText = score;
+
+
+        document.getElementById("speechResult")
+            .innerText =
+            "You answered " +
+            answered +
+            " out of " +
+            questions.length +
+            " questions. Average response length: " +
+            averageWords +
+            " words.";
+
+
+        document.getElementById("answerResult")
+            .innerText =
+            answered >= 8
+            ? "Good participation throughout the interview."
+            : "Try to provide complete answers for every question.";
+
+
+        document.getElementById("professionalResult")
+            .innerText =
+            averageWords >= 40
+            ? "Your responses contain enough content for a professional interview."
+            : "Try to explain your answers with more relevant details and examples.";
+
+
+        if (score >= 80) {
+
+            document.getElementById("feedback")
+                .innerText =
+                "Good communication effort. Continue practising structured answers and clear speaking.";
+
+        } else if (score >= 60) {
+
+            document.getElementById("feedback")
+                .innerText =
+                "Good start. Practise speaking in complete sentences and support your answers with examples.";
+
+        } else {
+
+            document.getElementById("feedback")
+                .innerText =
+                "Keep practising. Try to speak clearly and give more detailed answers.";
+
+        }
+
+    }
+
+
+    // =========================================
+    // BACK TO ROUNDS
+    // =========================================
+
+    function goToRounds() {
+
+        window.location.href = "/rounds";
+
+    }
+
+</script>
+
+</body>
+</html>

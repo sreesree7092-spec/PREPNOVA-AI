@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Details - PREPNOVA AI</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #312e81, #581c87);
+            color: white;
+        }
+
+        .container {
+            width: 400px;
+            max-width: 85%;
+            margin: 60px auto;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #d8b4fe;
+        }
+
+        input,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #e9d5ff;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 25px;
+            background: #a855f7;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #9333ea;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Student Details</h1>
+
+    <form method="POST" action="/student" enctype="multipart/form-data">
+
+        <input
+            type="text"
+            name="name"
+            placeholder="Enter your name"
+            required
+        >
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+        >
+
+        <select name="department" required>
+            <option value="">Select Department</option>
+            <option>AI & DS</option>
+            <option>CSE</option>
+            <option>ECE</option>
+            <option>EEE</option>
+            <option>Mechanical</option>
+            <option>Civil</option>
+            <option>Cyber Security</option>
+            <option>MCA</option>
+        </select>
+
+        <label for="resume">
+            Upload Your Resume (PDF) *
+        </label>
+
+        <input
+            type="file"
+            id="resume"
+            name="resume"
+            accept=".pdf"
+            required
+        >
+
+        <label for="portfolio">
+            Portfolio Link (Optional)
+        </label>
+
+        <input
+            type="url"
+            id="portfolio"
+            name="portfolio"
+            placeholder="https://yourportfolio.com"
+        >
+
+        <button type="submit">
+            Continue
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

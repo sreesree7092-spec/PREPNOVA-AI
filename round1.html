@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Round 1 - PREPNOVA AI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #312e81, #581c87);
+    color: white;
+    user-select: none;
+    min-height: 100vh;
+}
+
+.container {
+    width: 650px;
+    max-width: 90%;
+    margin: 40px auto;
+    padding: 35px;
+    background: rgba(255,255,255,0.10);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(168,85,247,0.25);
+}
+
+h1 {
+    text-align: center;
+    color: #d8b4fe;
+    margin-bottom: 25px;
+}
+
+.instructions {
+    line-height: 1.8;
+}
+
+.instructions-title {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.status {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.status-box {
+    background: rgba(255,255,255,0.10);
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: #ddd6fe;
+}
+
+.timer {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #f0abfc;
+    margin: 20px;
+}
+
+.progress {
+    text-align: center;
+    color: #c4b5fd;
+    font-size: 17px;
+}
+
+.question {
+    font-size: 21px;
+    margin: 30px 0 20px;
+    line-height: 1.5;
+}
+
+label {
+    display: block;
+    padding: 15px;
+    margin: 12px 0;
+    background: rgba(255,255,255,0.10);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+label:hover {
+    background: rgba(255,255,255,0.20);
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 25px;
+    background: #a855f7;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #9333ea;
+}
+
+#startButton {
+    background: #7c3aed;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#startButton:hover {
+    background: #6d28d9;
+}
+
+#nextButton {
+    background: #a855f7;
+}
+
+#round2Button {
+    background: #22c55e;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px;
+}
+
+#round2Button:hover {
+    background: #16a34a;
+}
+
+#result {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 25px;
+    color: #d8b4fe;
+    line-height: 1.7;
+}
+
+.warning {
+    text-align: center;
+    color: #fca5a5;
+    margin-top: 15px;
+    min-height: 25px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.completed {
+    text-align: center;
+    font-size: 28px;
+    color: #d8b4fe;
+    margin-top: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎯 PREPNOVA AI - Round 1</h1>
+
+<!-- INSTRUCTIONS -->
+
+<div id="instructions">
+
+<div class="instructions-title">
+<b>AI-Proctored Aptitude Assessment</b>
+</div>
+
+<p>⏱️ <b>Each question has 60 seconds.</b></p>
+
+<p>📝 Total Questions: <b>10</b></p>
+
+<p>🚫 Copy, paste and right-click are restricted.</p>
+
+<p>🖥️ Fullscreen mode will be enabled.</p>
+
+<p>⚠️ Switching tabs will be detected.</p>
+
+<p>🔀 Questions will appear in random order.</p>
+
+<button id="startButton" type="button">
+🚀 Start Interview
+</button>
+
+</div>
+
+
+<!-- INTERVIEW AREA -->
+
+<div id="interviewArea" class="hidden">
+
+<div class="status">
+
+<div class="status-box">
+📊 Score:
+<span id="scoreDisplay">0</span>
+</div>
+
+<div class="status-box">
+🛡️ Violations:
+<span id="violationDisplay">0</span>
+</div>
+
+</div>
+
+
+<p class="progress" id="progress">
+Question 1 of 10
+</p>
+
+
+<div class="timer" id="timer">
+Time Left: 60s
+</div>
+
+
+<div class="question" id="question"></div>
+
+<div id="options"></div>
+
+<button id="nextButton" type="button">
+Next Question
+</button>
+
+<div class="warning" id="warning"></div>
+
+<div id="result"></div>
+
+<!-- ROUND 2 BUTTON -->
+<button
+    id="round2Button"
+    type="button"
+    class="hidden"
+    onclick="goToRound2()">
+    🚀 Go to Round 2
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   QUESTIONS
+========================= */
+
+const questions = [
+
+{
+question:
+"An item is increased in price from ₹200 to ₹250. What is the percentage increase?",
+
+options: [
+"20%",
+"25%",
+"30%",
+"35%"
+],
+
+answer: 1
+},
+
+{
+question:
+"A train travels 360 km in 4.5 hours. What is its average speed?",
+
+options: [
+"70 km/h",
+"75 km/h",
+"80 km/h",
+"85 km/h"
+],
+
+answer: 2
+},
+
+{
+question:
+"The ratio of boys to girls in a class is 3:2. If there are 30 boys, how many girls are there?",
+
+options: [
+"15",
+"20",
+"25",
+"30"
+],
+
+answer: 1
+},
+
+{
+question:
+"A can complete a work in 10 days and B can complete it in 15 days. How many days will they take together?",
+
+options: [
+"5 days",
+"6 days",
+"7 days",
+"8 days"
+],
+
+answer: 1
+},
+
+{
+question:
+"Find the average of 10, 20, 30, 40 and 50.",
+
+options: [
+"20",
+"25",
+"30",
+"35"
+],
+
+answer: 2
+},
+
+{
+question:
+"An item costs ₹800 and is sold for ₹960. What is the profit percentage?",
+
+options: [
+"10%",
+"15%",
+"20%",
+"25%"
+],
+
+answer: 2
+},
+
+{
+question:
+"Find the next number: 3, 6, 12, 24, 48, ?",
+
+options: [
+"72",
+"84",
+"96",
+"100"
+],
+
+answer: 2
+},
+
+{
+question:
+"A bag contains 5 red balls and 3 blue balls. What is the probability of selecting a red ball?",
+
+options: [
+"3/8",
+"5/8",
+"1/2",
+"5/3"
+],
+
+answer: 1
+},
+
+{
+question:
+"A car travels at 60 km/h for 2.5 hours. What distance does it cover?",
+
+options: [
+"120 km",
+"140 km",
+"150 km",
+"160 km"
+],
+
+answer: 2
+},
+
+{
+question:
+"What is the angle between the hour hand and minute hand of a clock at exactly 3:00?",
+
+options: [
+"60°",
+"90°",
+"120°",
+"180°"
+],
+
+answer: 1
+}
+
+];
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let currentQuestion = 0;
+let score = 0;
+let timeLeft = 60;
+let timer = null;
+let violations = 0;
+let interviewStarted = false;
+let questionLocked = false;
+
+
+/* =========================
+   RANDOM QUESTION ORDER
+========================= */
+
+questions.sort(function() {
+    return Math.random() - 0.5;
+});
+
+
+/* =========================
+   WARNING SOUND
+========================= */
+
+let audioContext = null;
+
+function initializeAudio() {
+
+    if (!audioContext) {
+
+        audioContext = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+    }
+
+    if (audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+
+}
+
+
+function playWarningSound() {
+
+    try {
+
+        initializeAudio();
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gainNode =
+            audioContext.createGain();
+
+        oscillator.type = "sine";
+
+        oscillator.frequency.setValueAtTime(
+            800,
+            audioContext.currentTime
+        );
+
+        gainNode.gain.setValueAtTime(
+            0.3,
+            audioContext.currentTime
+        );
+
+        oscillator.connect(gainNode);
+
+        gainNode.connect(
+            audioContext.destination
+        );
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime + 0.5
+        );
+
+    }
+
+    catch(error) {
+
+        console.log(
+            "Warning sound could not play:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   START INTERVIEW
+========================= */
+
+function startInterview() {
+
+    console.log("Start Interview clicked");
+
+    initializeAudio();
+
+    interviewStarted = true;
+
+    currentQuestion = 0;
+
+    score = 0;
+
+    violations = 0;
+
+    document.getElementById(
+        "scoreDisplay"
+    ).innerText = "0";
+
+    document.getElementById(
+        "violationDisplay"
+    ).innerText = "0";
+
+    document.getElementById(
+        "instructions"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "interviewArea"
+    ).classList.remove("hidden");
+
+    document.getElementById(
+        "round2Button"
+    ).classList.add("hidden");
+
+    startFullscreen();
+
+    loadQuestion();
+
+}
+
+
+/* =========================
+   FULLSCREEN
+========================= */
+
+function startFullscreen() {
+
+    if (document.documentElement.requestFullscreen) {
+
+        document.documentElement
+            .requestFullscreen()
+            .catch(function(error) {
+
+                console.log(
+                    "Fullscreen permission not granted."
+                );
+
+            });
+
+    }
+
+}
+
+
+/* =========================
+   LOAD QUESTION
+========================= */
+
+function loadQuestion() {
+
+    clearInterval(timer);
+
+    questionLocked = false;
+
+    timeLeft = 60;
+
+    document.getElementById(
+        "progress"
+    ).innerText =
+        "Question " +
+        (currentQuestion + 1) +
+        " of " +
+        questions.length;
+
+    document.getElementById(
+        "question"
+    ).innerText =
+        questions[currentQuestion].question;
+
+
+    let optionsHTML = "";
+
+
+    questions[currentQuestion].options
+        .forEach(function(option, index) {
+
+            optionsHTML += `
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="answer"
+                        value="${index}"
+                    >
+
+                    ${option}
+
+                </label>
+
+            `;
+
+        });
+
+
+    document.getElementById(
+        "options"
+    ).innerHTML = optionsHTML;
+
+
+    document.getElementById(
+        "warning"
+    ).innerText = "";
+
+
+    document.getElementById(
+        "nextButton"
+    ).style.display = "block";
+
+
+    startTimer();
+
+}
+
+
+/* =========================
+   TIMER - 60 SECONDS
+========================= */
+
+function startTimer() {
+
+    clearInterval(timer);
+
+    timeLeft = 60;
+
+    document.getElementById(
+        "timer"
+    ).innerText =
+        "Time Left: " +
+        timeLeft +
+        "s";
+
+
+    timer = setInterval(function() {
+
+        timeLeft--;
+
+        document.getElementById(
+            "timer"
+        ).innerText =
+            "Time Left: " +
+            timeLeft +
+            "s";
+
+
+        if (timeLeft <= 0) {
+
+            clearInterval(timer);
+
+            questionLocked = true;
+
+            document.getElementById(
+                "warning"
+            ).innerText =
+                "⏰ Time's up! Moving to next question...";
+
+
+            setTimeout(function() {
+
+                moveToNextQuestion();
+
+            }, 500);
+
+        }
+
+    }, 1000);
+
+}
+
+
+/* =========================
+   NEXT QUESTION
+========================= */
+
+function nextQuestion() {
+
+    if (questionLocked) {
+
+        return;
+
+    }
+
+
+    let selected =
+        document.querySelector(
+            'input[name="answer"]:checked'
+        );
+
+
+    if (!selected) {
+
+        alert("Please select an answer!");
+
+        return;
+
+    }
+
+
+    questionLocked = true;
+
+
+    let selectedAnswer =
+        parseInt(selected.value);
+
+
+    if (
+        selectedAnswer ===
+        questions[currentQuestion].answer
+    ) {
+
+        score++;
+
+        document.getElementById(
+            "scoreDisplay"
+        ).innerText = score;
+
+    }
+
+
+    moveToNextQuestion();
+
+}
+
+
+/* =========================
+   MOVE TO NEXT QUESTION
+========================= */
+
+function moveToNextQuestion() {
+
+    clearInterval(timer);
+
+    currentQuestion++;
+
+
+    if (
+        currentQuestion <
+        questions.length
+    ) {
+
+        loadQuestion();
+
+    }
+
+    else {
+
+        finishTest();
+
+    }
+
+}
+
+
+/* =========================
+   FINISH TEST
+========================= */
+
+function finishTest() {
+
+    clearInterval(timer);
+
+    interviewStarted = false;
+
+    document.getElementById(
+        "question"
+    ).innerHTML =
+        "🎉 Round 1 Completed!";
+
+    document.getElementById(
+        "question"
+    ).classList.add("completed");
+
+
+    document.getElementById(
+        "options"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "nextButton"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "progress"
+    ).innerText = "";
+
+
+    document.getElementById(
+        "timer"
+    ).innerText =
+        "⏱️ Assessment Completed";
+
+
+    let feedback = "";
+
+
+    if (score >= 8) {
+
+        feedback =
+            "Excellent! 🎉 Strong aptitude and logical reasoning skills.";
+
+    }
+
+    else if (score >= 6) {
+
+        feedback =
+            "Good job! 👍 Your aptitude skills are developing well.";
+
+    }
+
+    else if (score >= 4) {
+
+        feedback =
+            "Average performance. 📚 More practice is recommended.";
+
+    }
+
+    else {
+
+        feedback =
+            "Needs Improvement. 💪 Regular aptitude practice is recommended.";
+
+    }
+
+
+    let integrityMessage = "";
+
+
+    if (violations === 0) {
+
+        integrityMessage =
+            "Excellent assessment integrity. No tab-switch violations detected.";
+
+    }
+
+    else if (violations <= 2) {
+
+        integrityMessage =
+            "Some tab-switch activity was detected.";
+
+    }
+
+    else {
+
+        integrityMessage =
+            "Multiple tab-switch violations were detected.";
+
+    }
+
+
+    document.getElementById(
+        "result"
+    ).innerHTML =
+
+        "<b>Your Score: " +
+        score +
+        " / " +
+        questions.length +
+        "</b>" +
+
+        "<br><br>" +
+
+        "🤖 AI Performance Feedback:" +
+
+        "<br>" +
+
+        feedback +
+
+        "<br><br>" +
+
+        "🛡️ Integrity Score: " +
+
+        calculateIntegrityScore() +
+
+        "%" +
+
+        "<br>" +
+
+        "⚠️ Tab Switches: " +
+
+        violations +
+
+        "<br><br>" +
+
+        integrityMessage;
+
+
+    /*
+       Tell Flask that Round 1
+       has been completed.
+    */
+
+    fetch("/round1-complete", {
+        method: "POST"
+    })
+    .then(function(response) {
+
+        console.log(
+            "Round 1 completion sent to server."
+        );
+
+    })
+    .catch(function(error) {
+
+        console.log(
+            "Could not update Round 1 status:",
+            error
+        );
+
+    });
+
+
+    /*
+       Show Round 2 button
+    */
+
+    document.getElementById(
+        "round2Button"
+    ).classList.remove("hidden");
+
+}
+
+
+/* =========================
+   GO TO ROUND 2
+========================= */
+
+function goToRound2() {
+
+    window.location.href = "/round2";
+
+}
+
+
+/* =========================
+   INTEGRITY SCORE
+========================= */
+
+function calculateIntegrityScore() {
+
+    let integrityScore =
+        100 - (violations * 20);
+
+
+    if (integrityScore < 0) {
+
+        integrityScore = 0;
+
+    }
+
+
+    return integrityScore;
+
+}
+
+
+/* =========================
+   TAB SWITCH DETECTION
+========================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function() {
+
+        if (
+            interviewStarted &&
+            document.hidden
+        ) {
+
+            violations++;
+
+
+            document.getElementById(
+                "violationDisplay"
+            ).innerText = violations;
+
+
+            document.getElementById(
+                "warning"
+            ).innerText =
+                "⚠️ Warning! Tab switching detected!";
+
+
+            playWarningSound();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   FULLSCREEN EXIT DETECTION
+========================= */
+
+document.addEventListener(
+    "fullscreenchange",
+    function() {
+
+        if (
+            interviewStarted &&
+            !document.fullscreenElement
+        ) {
+
+            violations++;
+
+
+            document.getElementById(
+                "violationDisplay"
+            ).innerText = violations;
+
+
+            document.getElementById(
+                "warning"
+            ).innerText =
+                "⚠️ Warning: Fullscreen mode exited!";
+
+
+            playWarningSound();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   COPY BLOCK
+========================= */
+
+document.addEventListener(
+    "copy",
+    function(event) {
+
+        if (interviewStarted) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   PASTE BLOCK
+========================= */
+
+document.addEventListener(
+    "paste",
+    function(event) {
+
+        if (interviewStarted) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   CUT BLOCK
+========================= */
+
+document.addEventListener(
+    "cut",
+    function(event) {
+
+        if (interviewStarted) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   RIGHT CLICK BLOCK
+========================= */
+
+document.addEventListener(
+    "contextmenu",
+    function(event) {
+
+        if (interviewStarted) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   KEYBOARD BLOCK
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (!interviewStarted) {
+
+            return;
+
+        }
+
+
+        /*
+        Ctrl + C
+        Ctrl + V
+        Ctrl + X
+        Ctrl + A
+        */
+
+        if (
+            (event.ctrlKey || event.metaKey) &&
+            ["c", "v", "x", "a"]
+                .includes(
+                    event.key.toLowerCase()
+                )
+        ) {
+
+            event.preventDefault();
+
+        }
+
+
+        /* F12 */
+
+        if (event.key === "F12") {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   START BUTTON EVENT
+========================= */
+
+document.getElementById(
+    "startButton"
+).addEventListener(
+    "click",
+    function() {
+
+        startInterview();
+
+    }
+);
+
+
+/* =========================
+   NEXT BUTTON EVENT
+========================= */
+
+document.getElementById(
+    "nextButton"
+).addEventListener(
+    "click",
+    function() {
+
+        nextQuestion();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
