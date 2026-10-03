@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PrepNova AI - Round 5</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, #24104f, transparent 35%),
+        radial-gradient(circle at bottom right, #062b50, transparent 35%),
+        linear-gradient(135deg, #050014, #100021, #00152f);
+    color: white;
+    padding: 25px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* HEADER */
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 36px;
+    color: #d8b4fe;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: #cbd5e1;
+}
+
+/* STUDENT DETAILS */
+
+.student-box {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 15px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.student-box p {
+    margin: 7px 0;
+    color: #e2e8f0;
+}
+
+/* TIMER */
+
+.timer {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #facc15;
+    margin-bottom: 20px;
+}
+
+/* PROGRESS */
+
+.progress-box {
+    margin-bottom: 20px;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+    color: #cbd5e1;
+}
+
+.progress {
+    height: 9px;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 20%;
+    background: linear-gradient(90deg,#a855f7,#ec4899);
+    transition: 0.3s;
+}
+
+/* INTERVIEW GRID */
+
+.interview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+/* PANEL */
+
+.panel {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.35);
+}
+
+/* AI INTERVIEWER */
+
+.panel-title {
+    color: #c084fc;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 17px;
+}
+
+.ai-avatar {
+    height: 310px;
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at center, #34205f, #0b0718);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.avatar-face {
+    width: 160px;
+    height: 190px;
+    border-radius: 48% 48% 45% 45%;
+    background: linear-gradient(145deg,#f1c7a8,#d99b78);
+    position: relative;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+}
+
+.hair {
+    position: absolute;
+    width: 165px;
+    height: 90px;
+    background: #24150f;
+    border-radius: 80% 80% 25% 25%;
+    top: -10px;
+    left: -3px;
+}
+
+.eye {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    background: #111;
+    border-radius: 50%;
+    top: 85px;
+}
+
+.eye.left {
+    left: 42px;
+}
+
+.eye.right {
+    right: 42px;
+}
+
+.nose {
+    position: absolute;
+    width: 12px;
+    height: 25px;
+    border-right: 3px solid #a86f55;
+    left: 74px;
+    top: 98px;
+    border-radius: 50%;
+}
+
+.mouth {
+    position: absolute;
+    width: 42px;
+    height: 15px;
+    border-bottom: 3px solid #8d3d4b;
+    border-radius: 50%;
+    left: 59px;
+    top: 135px;
+}
+
+.ai-status {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #c084fc;
+    font-weight: bold;
+}
+
+/* QUESTION */
+
+.question-box {
+    margin-top: 18px;
+    padding: 18px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 14px;
+}
+
+.question-label {
+    color: #a78bfa;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.question {
+    font-size: 20px;
+    line-height: 1.5;
+}
+
+/* SPEAK QUESTION */
+
+.speak-question {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* WEBCAM */
+
+.camera-box {
+    height: 310px;
+    background: #020617;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+.camera-status {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #4ade80;
+    font-weight: bold;
+}
+
+/* MIC */
+
+.voice-area {
+    text-align: center;
+    margin-top: 18px;
+}
+
+.mic-button {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg,#9333ea,#db2777);
+    color: white;
+    font-size: 34px;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(168,85,247,0.5);
+}
+
+.mic-button.listening {
+    background: linear-gradient(135deg,#ef4444,#dc2626);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+
+    0% {
+        box-shadow: 0 0 0 0 rgba(239,68,68,0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 25px rgba(239,68,68,0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(239,68,68,0);
+    }
+}
+
+.voice-status {
+    margin-top: 10px;
+    color: #facc15;
+    min-height: 25px;
+}
+
+/* ANSWER */
+
+textarea {
+    width: 100%;
+    height: 130px;
+    margin-top: 15px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #475569;
+    background: #0f172a;
+    color: white;
+    font-size: 15px;
+    resize: vertical;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #a855f7;
+}
+
+/* BUTTONS */
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 18px;
+}
+
+button {
+    border: none;
+    padding: 13px 22px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.back-btn {
+    background: #334155;
+    color: white;
+}
+
+.next-btn {
+    background: linear-gradient(90deg,#9333ea,#db2777);
+    color: white;
+}
+
+/* RESULT */
+
+.result {
+    display: none;
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 35px;
+    text-align: center;
+}
+
+.result h2 {
+    color: #d8b4fe;
+    margin-bottom: 20px;
+    font-size: 30px;
+}
+
+.score-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 8px solid #a855f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.result-card {
+    background: rgba(0,0,0,0.25);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 12px 0;
+    text-align: left;
+}
+
+.result-card h3 {
+    color: #c084fc;
+    margin-bottom: 8px;
+}
+
+.result-card p {
+    color: #dbeafe;
+    line-height: 1.6;
+}
+
+.success {
+    color: #4ade80;
+    font-weight: bold;
+}
+
+.warning {
+    color: #facc15;
+    font-weight: bold;
+}
+
+.home-btn {
+    margin-top: 20px;
+    background: linear-gradient(90deg,#2563eb,#7c3aed);
+    color: white;
+}
+
+/* MOBILE */
+
+@media(max-width:800px) {
+
+    .interview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>🚀 PREPNOVA AI</h1>
+
+        <p>
+            Face-to-Face AI Mock Interview
+        </p>
+
+    </div>
+
+
+    <!-- STUDENT DETAILS -->
+
+    <div class="student-box">
+
+        <p>
+            👤 <strong>Student:</strong>
+            {{ name }}
+        </p>
+
+        <p>
+            🎓 <strong>Department:</strong>
+            {{ department }}
+        </p>
+
+        <p>
+            💻 <strong>Skills:</strong>
+
+            {% if skills %}
+                {{ skills | join(", ") }}
+            {% else %}
+                Not detected from resume
+            {% endif %}
+
+        </p>
+
+    </div>
+
+
+    <!-- TIMER -->
+
+    <div class="timer">
+
+        ⏱️ Interview Time:
+
+        <span id="timer">
+            10:00
+        </span>
+
+    </div>
+
+
+    <!-- INTERVIEW AREA -->
+
+    <div id="interviewArea">
+
+
+        <!-- PROGRESS -->
+
+        <div class="progress-box">
+
+            <div class="progress-text">
+
+                <span id="questionNumber">
+                    Question 1 of 5
+                </span>
+
+                <span id="progressPercent">
+                    20%
+                </span>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    id="progressBar">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FACE TO FACE -->
+
+        <div class="interview-grid">
+
+
+            <!-- AI INTERVIEWER -->
+
+            <div class="panel">
+
+                <div class="panel-title">
+                    🤖 AI INTERVIEWER
+                </div>
+
+
+                <div class="ai-avatar">
+
+                    <div class="avatar-face">
+
+                        <div class="hair"></div>
+
+                        <div class="eye left"></div>
+
+                        <div class="eye right"></div>
+
+                        <div class="nose"></div>
+
+                        <div class="mouth"></div>
+
+                    </div>
+
+
+                    <div
+                        class="ai-status"
+                        id="aiStatus">
+
+                        🟢 AI Interviewer Ready
+
+                    </div>
+
+                </div>
+
+
+                <div class="question-box">
+
+                    <div class="question-label">
+                        INTERVIEW QUESTION
+                    </div>
+
+                    <div
+                        class="question"
+                        id="question">
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="speak-question"
+                    onclick="speakQuestion()">
+
+                    🔊 AI Read Question
+
+                </button>
+
+            </div>
+
+
+            <!-- STUDENT -->
+
+            <div class="panel">
+
+                <div class="panel-title">
+                    👤 YOUR CAMERA
+                </div>
+
+
+                <div class="camera-box">
+
+                    <video
+                        id="video"
+                        autoplay
+                        muted>
+                    </video>
+
+
+                    <div
+                        class="camera-status"
+                        id="cameraStatus">
+
+                        📹 Camera Starting...
+
+                    </div>
+
+                </div>
+
+
+                <!-- MICROPHONE -->
+
+                <div class="voice-area">
+
+                    <button
+                        class="mic-button"
+                        id="micButton"
+                        onclick="toggleRecording()">
+
+                        🎤
+
+                    </button>
+
+
+                    <div
+                        class="voice-status"
+                        id="voiceStatus">
+
+                        🎤 Click microphone to answer
+
+                    </div>
+
+                </div>
+
+
+                <!-- ANSWER TEXT -->
+
+                <textarea
+                    id="answer"
+                    placeholder="Your spoken answer will appear here...">
+                </textarea>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="buttons">
+
+            <button
+                class="back-btn"
+                onclick="goBack()">
+
+                ← Back to Rounds
+
+            </button>
+
+
+            <button
+                class="next-btn"
+                id="nextButton"
+                onclick="nextQuestion()">
+
+                Next Question →
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULT -->
+
+    <div
+        class="result"
+        id="result">
+
+        <h2>
+            🎉 Face-to-Face Interview Completed!
+        </h2>
+
+        <p>
+            Your final mock interview assessment is ready.
+        </p>
+
+
+        <div class="score-circle">
+
+            <span id="finalScore">
+                0
+            </span>
+
+            <span>%</span>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h3>
+                📊 Career Readiness
+            </h3>
+
+            <p id="readinessText"></p>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h3>
+                💪 Strengths
+            </h3>
+
+            <p id="strengthText"></p>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h3>
+                📚 Areas to Improve
+            </h3>
+
+            <p id="improvementText"></p>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h3>
+                🚀 Recommended Skills
+            </h3>
+
+            <p>
+                Communication Skills,
+                Problem Solving,
+                Technical Interview Skills,
+                Resume Presentation,
+                Logical Thinking
+            </p>
+
+        </div>
+
+
+        <button
+            class="home-btn"
+            onclick="goToRounds()">
+
+            ← Back to Rounds
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   QUESTIONS
+========================================= */
+
+const questions = [
+
+    "Tell me about yourself and your educational background.",
+
+    "What are your biggest strengths and how will they help you in your career?",
+
+    "Explain your final year project and your role in developing it.",
+
+    "What is one technical skill you are currently improving and why?",
+
+    "Why should a company hire you as a fresher?"
+
+];
+
+
+/* =========================================
+   VARIABLES
+========================================= */
+
+let currentQuestion = 0;
+
+let answers = [];
+
+let timeLeft = 600;
+
+let interviewFinished = false;
+
+let timerInterval = null;
+
+let recognition = null;
+
+let isListening = false;
+
+
+/* =========================================
+   CAMERA
+========================================= */
+
+async function startCamera() {
+
+    const video =
+        document.getElementById("video");
+
+    const status =
+        document.getElementById("cameraStatus");
+
+    try {
+
+        const stream =
+            await navigator.mediaDevices
+            .getUserMedia({
+                video: true,
+                audio: false
+            });
+
+        video.srcObject = stream;
+
+        status.innerText =
+            "🟢 Camera Active";
+
+    }
+
+    catch(error) {
+
+        console.log(error);
+
+        status.innerText =
+            "⚠️ Camera permission denied";
+
+        alert(
+            "Camera permission is required for the face-to-face interview."
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   SPEECH RECOGNITION
+========================================= */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+if (SpeechRecognition) {
+
+    recognition =
+        new SpeechRecognition();
+
+    recognition.continuous = true;
+
+    recognition.interimResults = true;
+
+    recognition.lang = "en-IN";
+
+
+    recognition.onstart = function() {
+
+        isListening = true;
+
+        document
+            .getElementById("micButton")
+            .classList.add("listening");
+
+        document
+            .getElementById("micButton")
+            .innerText = "🛑";
+
+
+        document
+            .getElementById("voiceStatus")
+            .innerText =
+            "🔴 Listening... Speak your answer";
+
+
+        document
+            .getElementById("aiStatus")
+            .innerText =
+            "🎤 Listening to Student";
+
+    };
+
+
+    recognition.onresult = function(event) {
+
+        let finalText = "";
+
+        let interimText = "";
+
+
+        for (
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+        ) {
+
+            let transcript =
+                event.results[i][0].transcript;
+
+
+            if (event.results[i].isFinal) {
+
+                finalText += transcript + " ";
+
+            }
+
+            else {
+
+                interimText += transcript;
+
+            }
+
+        }
+
+
+        const textarea =
+            document.getElementById("answer");
+
+
+        if (finalText) {
+
+            textarea.value += finalText;
+
+        }
+
+
+        if (interimText) {
+
+            document
+                .getElementById("voiceStatus")
+                .innerText =
+                "🔴 " + interimText;
+
+        }
+
+    };
+
+
+    recognition.onerror = function(event) {
+
+        console.log(
+            "Speech error:",
+            event.error
+        );
+
+
+        if (
+            event.error ===
+            "not-allowed"
+        ) {
+
+            alert(
+                "Microphone permission denied. Please allow microphone access."
+            );
+
+        }
+
+
+        stopRecording();
+
+    };
+
+
+    recognition.onend = function() {
+
+        if (isListening) {
+
+            try {
+
+                recognition.start();
+
+            }
+
+            catch(error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+    };
+
+}
+
+
+/* =========================================
+   START / STOP VOICE
+========================================= */
+
+function toggleRecording() {
+
+    if (!recognition) {
+
+        alert(
+            "Voice recognition is not supported. Please use Google Chrome or Microsoft Edge."
+        );
+
+        return;
+
+    }
+
+
+    if (isListening) {
+
+        stopRecording();
+
+    }
+
+    else {
+
+        startRecording();
+
+    }
+
+}
+
+
+function startRecording() {
+
+    try {
+
+        recognition.start();
+
+    }
+
+    catch(error) {
+
+        console.log(error);
+
+    }
+
+}
+
+
+function stopRecording() {
+
+    isListening = false;
+
+
+    if (recognition) {
+
+        try {
+
+            recognition.stop();
+
+        }
+
+        catch(error) {
+
+            console.log(error);
+
+        }
+
+    }
+
+
+    document
+        .getElementById("micButton")
+        .classList.remove("listening");
+
+
+    document
+        .getElementById("micButton")
+        .innerText = "🎤";
+
+
+    document
+        .getElementById("voiceStatus")
+        .innerText =
+        "🎤 Recording stopped";
+
+
+    document
+        .getElementById("aiStatus")
+        .innerText =
+        "🟢 AI Interviewer Ready";
+
+}
+
+
+/* =========================================
+   AI QUESTION VOICE
+========================================= */
+
+function speakQuestion() {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        alert(
+            "Voice playback is not supported in this browser."
+        );
+
+        return;
+
+    }
+
+
+    window.speechSynthesis.cancel();
+
+
+    const text =
+        questions[currentQuestion];
+
+
+    const speech =
+        new SpeechSynthesisUtterance(text);
+
+
+    speech.lang = "en-IN";
+
+    speech.rate = 0.9;
+
+    speech.pitch = 1;
+
+
+    document
+        .getElementById("aiStatus")
+        .innerText =
+        "🔊 AI Interviewer Speaking";
+
+
+    speech.onend = function() {
+
+        document
+            .getElementById("aiStatus")
+            .innerText =
+            "🟢 AI Interviewer Ready";
+
+    };
+
+
+    window.speechSynthesis.speak(speech);
+
+}
+
+
+/* =========================================
+   LOAD QUESTION
+========================================= */
+
+function loadQuestion() {
+
+    stopRecording();
+
+
+    document
+        .getElementById("question")
+        .innerText =
+        questions[currentQuestion];
+
+
+    document
+        .getElementById("answer")
+        .value =
+        answers[currentQuestion] || "";
+
+
+    document
+        .getElementById("questionNumber")
+        .innerText =
+        "Question " +
+        (currentQuestion + 1) +
+        " of " +
+        questions.length;
+
+
+    let percent =
+        ((currentQuestion + 1) /
+        questions.length) * 100;
+
+
+    document
+        .getElementById("progressPercent")
+        .innerText =
+        percent + "%";
+
+
+    document
+        .getElementById("progressBar")
+        .style.width =
+        percent + "%";
+
+
+    if (
+        currentQuestion ===
+        questions.length - 1
+    ) {
+
+        document
+            .getElementById("nextButton")
+            .innerText =
+            "Finish Interview ✓";
+
+    }
+
+    else {
+
+        document
+            .getElementById("nextButton")
+            .innerText =
+            "Next Question →";
+
+    }
+
+
+    /* Automatically read question */
+
+    setTimeout(function() {
+
+        speakQuestion();
+
+    }, 600);
+
+}
+
+
+/* =========================================
+   NEXT QUESTION
+========================================= */
+
+function nextQuestion() {
+
+    stopRecording();
+
+
+    let answer =
+        document
+        .getElementById("answer")
+        .value.trim();
+
+
+    if (answer.length < 10) {
+
+        alert(
+            "Please provide a meaningful spoken answer before continuing."
+        );
+
+        return;
+
+    }
+
+
+    answers[currentQuestion] =
+        answer;
+
+
+    if (
+        currentQuestion <
+        questions.length - 1
+    ) {
+
+        currentQuestion++;
+
+        loadQuestion();
+
+    }
+
+    else {
+
+        finishInterview();
+
+    }
+
+}
+
+
+/* =========================================
+   SCORE
+========================================= */
+
+function calculateScore() {
+
+    let total = 0;
+
+
+    answers.forEach(function(answer) {
+
+        let score = 0;
+
+
+        let words =
+            answer
+            .trim()
+            .split(/\s+/)
+            .length;
+
+
+        if (words >= 10) {
+
+            score += 10;
+
+        }
+
+
+        if (words >= 20) {
+
+            score += 10;
+
+        }
+
+
+        if (words >= 40) {
+
+            score += 10;
+
+        }
+
+
+        const keywords = [
+
+            "project",
+            "skill",
+            "team",
+            "learn",
+            "problem",
+            "experience",
+            "python",
+            "java",
+            "communication",
+            "career",
+            "goal",
+            "technology",
+            "ai",
+            "machine learning"
+
+        ];
+
+
+        keywords.forEach(function(keyword) {
+
+            if (
+                answer
+                .toLowerCase()
+                .includes(keyword)
+            ) {
+
+                score += 5;
+
+            }
+
+        });
+
+
+        if (score > 100) {
+
+            score = 100;
+
+        }
+
+
+        total += score;
+
+    });
+
+
+    return Math.round(
+        total / questions.length
+    );
+
+}
+
+
+/* =========================================
+   FINISH
+========================================= */
+
+function finishInterview() {
+
+    stopRecording();
+
+
+    interviewFinished = true;
+
+
+    if (timerInterval) {
+
+        clearInterval(timerInterval);
+
+    }
+
+
+    /* Stop camera */
+
+    const video =
+        document.getElementById("video");
+
+
+    if (video.srcObject) {
+
+        video.srcObject
+            .getTracks()
+            .forEach(function(track) {
+
+                track.stop();
+
+            });
+
+    }
+
+
+    let score =
+        calculateScore();
+
+
+    document
+        .getElementById("interviewArea")
+        .style.display =
+        "none";
+
+
+    document
+        .querySelector(".timer")
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById("result")
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById("finalScore")
+        .innerText =
+        score;
+
+
+    if (score >= 80) {
+
+        document
+            .getElementById("readinessText")
+            .innerHTML =
+            "<span class='success'>Excellent!</span> You demonstrate strong interview readiness.";
+
+        document
+            .getElementById("strengthText")
+            .innerText =
+            "Good communication, structured answers and strong career awareness.";
+
+        document
+            .getElementById("improvementText")
+            .innerText =
+            "Focus on advanced technical questions and real-time problem solving.";
+
+    }
+
+    else if (score >= 60) {
+
+        document
+            .getElementById("readinessText")
+            .innerHTML =
+            "<span class='success'>Good Progress!</span> You have a good foundation for placement interviews.";
+
+        document
+            .getElementById("strengthText")
+            .innerText =
+            "You have relevant skills and are able to explain your ideas.";
+
+        document
+            .getElementById("improvementText")
+            .innerText =
+            "Improve answer structure, communication confidence and technical depth.";
+
+    }
+
+    else {
+
+        document
+            .getElementById("readinessText")
+            .innerHTML =
+            "<span class='warning'>Needs More Practice</span> Regular mock interviews can improve your placement readiness.";
+
+        document
+            .getElementById("strengthText")
+            .innerText =
+            "You have started building your technical and interview skills.";
+
+        document
+            .getElementById("improvementText")
+            .innerText =
+            "Focus on communication, technical fundamentals and answering interview questions clearly.";
+
+    }
+
+
+    /* Flask */
+
+    fetch(
+    "/round5-complete",
+    {
+        method: "POST",
+        headers: {
+            "Content-Type":
+                "application/json"
+        }
+    }
+)
+.then(response => response.json())
+.then(data => {
+
+    console.log("Round 5 completed");
+
+    // Go to final result page
+    window.location.href = "/result";
+
+})
+.catch(error => {
+
+    console.error(
+        "Round 5 completion error:",
+        error
+    );
+
+});
+
+}
+
+
+/* =========================================
+   TIMER
+========================================= */
+
+function startTimer() {
+
+    timerInterval =
+        setInterval(function() {
+
+            if (timeLeft <= 0) {
+
+                clearInterval(
+                    timerInterval
+                );
+
+
+                if (!interviewFinished) {
+
+                    alert(
+                        "⏰ Interview time is over!"
+                    );
+
+                    finishInterview();
+
+                }
+
+                return;
+
+            }
+
+
+            timeLeft--;
+
+
+            let minutes =
+                Math.floor(
+                    timeLeft / 60
+                );
+
+
+            let seconds =
+                timeLeft % 60;
+
+
+            document
+                .getElementById("timer")
+                .innerText =
+
+                String(minutes)
+                .padStart(2,"0")
+
+                + ":" +
+
+                String(seconds)
+                .padStart(2,"0");
+
+        },1000);
+
+}
+
+
+/* =========================================
+   BACK
+========================================= */
+
+function goBack() {
+
+    stopRecording();
+
+
+    if (
+        confirm(
+            "Are you sure you want to leave the interview?"
+        )
+    ) {
+
+        window.location.href =
+            "/rounds";
+
+    }
+
+}
+
+
+function goToRounds() {
+
+    window.location.href =
+        "/rounds";
+
+}
+
+
+/* =========================================
+   PREVENT COPY / PASTE
+========================================= */
+
+document.addEventListener(
+    "contextmenu",
+    function(e) {
+
+        e.preventDefault();
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    function(e) {
+
+        if (
+            e.ctrlKey &&
+            [
+                "c",
+                "v",
+                "x",
+                "a"
+            ].includes(
+                e.key.toLowerCase()
+            )
+        ) {
+
+            e.preventDefault();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   START
+========================================= */
+
+startCamera();
+
+loadQuestion();
+
+startTimer();
+
+</script>
+
+</body>
+</html>
