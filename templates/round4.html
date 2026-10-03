@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Round 4 - Coding Assessment | PREPNOVA AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #312e81, #581c87);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 18px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #d8b4fe;
+        }
+
+        .round {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 18px;
+            border-radius: 20px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .candidate {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .candidate h1 {
+            margin-bottom: 8px;
+        }
+
+        .candidate p {
+            color: #ddd6fe;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            background: rgba(220,38,38,0.2);
+            border: 1px solid rgba(248,113,113,0.4);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .question-count,
+        .warning-count {
+            background: rgba(255,255,255,0.1);
+            padding: 12px 20px;
+            border-radius: 12px;
+        }
+
+        .warning-count {
+            color: #fcd34d;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #c084fc;
+            transition: 0.4s;
+        }
+
+        .coding-area {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.09);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #d8b4fe;
+            margin-top: 0;
+        }
+
+        .question {
+            line-height: 1.7;
+            color: #f5f3ff;
+        }
+
+        .example {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            line-height: 1.7;
+        }
+
+        .example strong {
+            color: #c4b5fd;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 330px;
+            resize: vertical;
+            background: #0b1120;
+            color: #e9d5ff;
+            border: 1px solid #4c1d95;
+            border-radius: 12px;
+            padding: 18px;
+            font-family: Consolas, monospace;
+            font-size: 15px;
+            line-height: 1.6;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 12px rgba(168,85,247,0.25);
+        }
+
+        select {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: #1e1b4b;
+            color: white;
+            border: 1px solid #6d28d9;
+            margin-top: 8px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 22px;
+            border-radius: 25px;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .run-btn {
+            background: #2563eb;
+        }
+
+        .next-btn {
+            background: #7c3aed;
+        }
+
+        .finish-btn {
+            background: #059669;
+        }
+
+        .output {
+            margin-top: 18px;
+            background: #020617;
+            border-radius: 12px;
+            padding: 18px;
+            min-height: 100px;
+            color: #d1fae5;
+            white-space: pre-wrap;
+            font-family: Consolas, monospace;
+        }
+
+        .test-results {
+            margin-top: 20px;
+        }
+
+        .test {
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .passed {
+            color: #86efac;
+        }
+
+        .failed {
+            color: #fca5a5;
+        }
+
+        .warning {
+            color: #fcd34d;
+            margin-top: 15px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .result {
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid #c084fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 25px auto;
+            font-size: 38px;
+            font-weight: bold;
+        }
+
+        .result-card {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .result-card p {
+            color: #ddd6fe;
+            line-height: 1.6;
+        }
+
+        .success-message {
+            color: #86efac;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 800px) {
+
+            .coding-area {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .result {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <div class="logo">
+        PREPNOVA AI
+    </div>
+
+    <div class="round">
+        ROUND 4 • CODING
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <div class="candidate">
+
+        <h1>
+            💻 Coding & Problem Solving
+        </h1>
+
+        <p>
+            Welcome,
+            <strong>{{ name }}</strong>
+            |
+            Department:
+            <strong>{{ department }}</strong>
+        </p>
+
+    </div>
+
+
+    <!-- CODING SCREEN -->
+
+    <div id="codingScreen">
+
+        <div class="top-bar">
+
+            <div class="question-count"
+                 id="questionCount">
+                Question 1 of 3
+            </div>
+
+            <div class="timer">
+
+                ⏱️
+
+                <span id="timer">
+                    15:00
+                </span>
+
+            </div>
+
+            <div class="warning-count"
+                 id="warningCount">
+
+                ⚠️ Warnings: 0/3
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-container">
+
+            <div class="progress"
+                 id="progress">
+            </div>
+
+        </div>
+
+
+        <div class="coding-area">
+
+
+            <!-- QUESTION -->
+
+            <div class="card">
+
+                <h2>
+                    Problem Statement
+                </h2>
+
+                <div class="question"
+                     id="question">
+                </div>
+
+                <div class="example">
+
+                    <strong>
+                        Example
+                    </strong>
+
+                    <br><br>
+
+                    <span id="example">
+                    </span>
+
+                </div>
+
+
+                <div class="warning">
+
+                    ⚠️ Do not copy or paste code
+                    from external sources.
+
+                    <br><br>
+
+                    ⚠️ Leaving the assessment
+                    screen will generate a warning.
+
+                    <br><br>
+
+                    ⚠️ Maximum 3 warnings are allowed.
+
+                </div>
+
+            </div>
+
+
+            <!-- CODE EDITOR -->
+
+            <div class="card">
+
+                <h2>
+                    Code Editor
+                </h2>
+
+                <label>
+                    Language:
+                </label>
+
+                <br>
+
+                <select id="language">
+
+                    <option value="python">
+                        Python
+                    </option>
+
+                    <option value="javascript">
+                        JavaScript
+                    </option>
+
+                    <option value="java">
+                        Java
+                    </option>
+
+                    <option value="cpp">
+                        C++
+                    </option>
+
+                </select>
+
+                <br><br>
+
+                <textarea
+                    id="code"
+                    placeholder="Write your code here..."
+                ></textarea>
+
+
+                <div class="controls">
+
+                    <button
+                        class="run-btn"
+                        onclick="runCode()">
+
+                        ▶ Run Code
+
+                    </button>
+
+
+                    <button
+                        class="next-btn"
+                        onclick="nextQuestion()">
+
+                        Next Question ➜
+
+                    </button>
+
+                </div>
+
+
+                <div class="output"
+                     id="output">
+
+                    Output will appear here...
+
+                </div>
+
+
+                <div class="test-results"
+                     id="testResults">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULT SCREEN -->
+
+    <div id="resultScreen"
+         class="hidden">
+
+        <div class="result">
+
+            <h1>
+                🎉 Coding Assessment Completed
+            </h1>
+
+            <p>
+                Great job,
+                <strong>{{ name }}</strong>!
+            </p>
+
+
+            <div class="score-circle">
+
+                <span id="score">
+                    0
+                </span>
+
+                %
+
+            </div>
+
+
+            <h2>
+                Coding Score
+            </h2>
+
+
+            <div class="result-card">
+
+                <h3>
+                    🧪 Test Cases
+                </h3>
+
+                <p id="testSummary">
+                    -
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    💻 Problem Solving
+                </h3>
+
+                <p id="problemSummary">
+                    -
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    🤖 AI Feedback
+                </h3>
+
+                <p id="feedback">
+                    -
+                </p>
+
+            </div>
+
+
+            <div class="success-message"
+                 id="completionStatus">
+
+                Saving Round 4 completion...
+
+            </div>
+
+
+            <button
+                class="finish-btn"
+                id="backButton"
+                onclick="goToRounds()"
+                disabled>
+
+                🏠 Back to Rounds
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   QUESTIONS
+========================================= */
+
+const questions = [
+
+    {
+        question:
+            "Write a program to find the largest number in an array.",
+
+        example:
+            "Input: [10, 25, 7, 42, 18]\nOutput: 42",
+
+        answer:
+            "max"
+    },
+
+    {
+        question:
+            "Write a program to check whether a given string is a palindrome.",
+
+        example:
+            "Input: madam\nOutput: Palindrome",
+
+        answer:
+            "palindrome"
+    },
+
+    {
+        question:
+            "Write a program to calculate the sum of all elements in an array.",
+
+        example:
+            "Input: [5, 10, 15, 20]\nOutput: 50",
+
+        answer:
+            "sum"
+    }
+
+];
+
+
+/* =========================================
+   VARIABLES
+========================================= */
+
+let currentQuestion = 0;
+
+let totalTime = 15 * 60;
+
+let timerInterval = null;
+
+let results = [];
+
+let warningCount = 0;
+
+const maxWarnings = 3;
+
+let allowExit = false;
+
+let assessmentFinished = false;
+
+
+/* =========================================
+   PAGE LOAD
+========================================= */
+
+window.onload = function () {
+
+    showQuestion();
+
+    startTimer();
+
+};
+
+
+/* =========================================
+   SHOW QUESTION
+========================================= */
+
+function showQuestion() {
+
+    const q = questions[currentQuestion];
+
+    document.getElementById("question").innerText =
+        q.question;
+
+    document.getElementById("example").innerText =
+        q.example;
+
+    document.getElementById("questionCount").innerText =
+        "Question " +
+        (currentQuestion + 1) +
+        " of " +
+        questions.length;
+
+    document.getElementById("progress").style.width =
+        ((currentQuestion / questions.length) * 100) + "%";
+
+    document.getElementById("code").value = "";
+
+    document.getElementById("output").innerText =
+        "Output will appear here...";
+
+    document.getElementById("testResults").innerHTML = "";
+
+}
+
+
+/* =========================================
+   TIMER
+========================================= */
+
+function startTimer() {
+
+    timerInterval = setInterval(function () {
+
+        if (assessmentFinished) {
+
+            clearInterval(timerInterval);
+
+            return;
+        }
+
+        totalTime--;
+
+        let minutes =
+            Math.floor(totalTime / 60);
+
+        let seconds =
+            totalTime % 60;
+
+        document.getElementById("timer").innerText =
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(seconds).padStart(2, "0");
+
+
+        if (totalTime <= 0) {
+
+            clearInterval(timerInterval);
+
+            alert(
+                "⏰ Time is over. Your assessment will be submitted."
+            );
+
+            finishAssessment();
+
+        }
+
+    }, 1000);
+
+}
+
+
+/* =========================================
+   RUN CODE
+========================================= */
+
+function runCode() {
+
+    const code =
+        document.getElementById("code")
+            .value
+            .trim();
+
+    const output =
+        document.getElementById("output");
+
+    const testResults =
+        document.getElementById("testResults");
+
+
+    if (code === "") {
+
+        output.innerText =
+            "⚠️ Please write your code first.";
+
+        return;
+
+    }
+
+
+    output.innerText =
+        "Running test cases...";
+
+    testResults.innerHTML = "";
+
+
+    setTimeout(function () {
+
+        const keyword =
+            questions[currentQuestion].answer;
+
+        const lowerCode =
+            code.toLowerCase();
+
+        let passed = false;
+
+
+        if (
+
+            lowerCode.includes(keyword) ||
+
+            lowerCode.includes("for") ||
+
+            lowerCode.includes("while") ||
+
+            lowerCode.includes("return")
+
+        ) {
+
+            passed = true;
+
+        }
+
+
+        if (passed) {
+
+            output.innerText =
+                "✅ Code submitted successfully.";
+
+            testResults.innerHTML =
+
+                '<div class="test passed">' +
+                '✅ Test Case 1 — Passed' +
+                '</div>' +
+
+                '<div class="test passed">' +
+                '✅ Test Case 2 — Passed' +
+                '</div>' +
+
+                '<div class="test passed">' +
+                '✅ Test Case 3 — Passed' +
+                '</div>';
+
+            results[currentQuestion] = true;
+
+        }
+
+        else {
+
+            output.innerText =
+                "❌ The solution needs improvement.";
+
+            testResults.innerHTML =
+
+                '<div class="test failed">' +
+                '❌ Test Case 1 — Failed' +
+                '</div>' +
+
+                '<div class="test failed">' +
+                '❌ Test Case 2 — Failed' +
+                '</div>' +
+
+                '<div class="test failed">' +
+                '❌ Test Case 3 — Failed' +
+                '</div>';
+
+            results[currentQuestion] = false;
+
+        }
+
+    }, 800);
+
+}
+
+
+/* =========================================
+   NEXT QUESTION
+========================================= */
+
+function nextQuestion() {
+
+    const code =
+        document.getElementById("code")
+            .value
+            .trim();
+
+
+    if (code === "") {
+
+        const confirmNext =
+            confirm(
+                "You haven't written any code. Continue to the next question?"
+            );
+
+        if (!confirmNext) {
+            return;
+        }
+
+        results[currentQuestion] = false;
+
+    }
+
+
+    currentQuestion++;
+
+
+    if (currentQuestion >= questions.length) {
+
+        finishAssessment();
+
+        return;
+
+    }
+
+
+    showQuestion();
+
+}
+
+
+/* =========================================
+   SECURITY WARNING
+========================================= */
+
+function showSecurityWarning(message) {
+
+    if (allowExit || assessmentFinished) {
+        return;
+    }
+
+    warningCount++;
+
+
+    document.getElementById("warningCount").innerText =
+        "⚠️ Warnings: " +
+        warningCount +
+        "/" +
+        maxWarnings;
+
+
+    alert(
+        "⚠️ SECURITY WARNING " +
+        warningCount +
+        "/" +
+        maxWarnings +
+        "\n\n" +
+        message
+    );
+
+
+    if (warningCount >= maxWarnings) {
+
+        alert(
+            "🚫 Maximum warnings reached.\n\n" +
+            "Your assessment will now be submitted."
+        );
+
+        finishAssessment();
+
+    }
+
+}
+
+
+/* =========================================
+   TAB SWITCH
+========================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function () {
+
+        if (
+
+            document.hidden &&
+            !allowExit &&
+            !assessmentFinished
+
+        ) {
+
+            showSecurityWarning(
+                "You left the PREPNOVA AI assessment screen."
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   COPY / PASTE BLOCK
+========================================= */
+
+document.addEventListener(
+    "copy",
+    function (event) {
+        event.preventDefault();
+    }
+);
+
+document.addEventListener(
+    "paste",
+    function (event) {
+        event.preventDefault();
+    }
+);
+
+document.addEventListener(
+    "cut",
+    function (event) {
+        event.preventDefault();
+    }
+);
+
+document.addEventListener(
+    "contextmenu",
+    function (event) {
+        event.preventDefault();
+    }
+);
+
+
+/* =========================================
+   KEYBOARD SECURITY
+========================================= */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() === "c"
+        ) {
+            event.preventDefault();
+        }
+
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() === "v"
+        ) {
+            event.preventDefault();
+        }
+
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() === "x"
+        ) {
+            event.preventDefault();
+        }
+
+        if (event.key === "F12") {
+
+            event.preventDefault();
+
+            showSecurityWarning(
+                "Developer tools are not allowed during the assessment."
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   BROWSER EXIT
+========================================= */
+
+window.addEventListener(
+    "beforeunload",
+    function (event) {
+
+        if (
+            !allowExit &&
+            !assessmentFinished
+        ) {
+
+            event.preventDefault();
+
+            event.returnValue = "";
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   FINISH ASSESSMENT
+========================================= */
+
+async function finishAssessment() {
+
+    if (assessmentFinished) {
+        return;
+    }
+
+    assessmentFinished = true;
+
+    allowExit = true;
+
+    clearInterval(timerInterval);
+
+
+    document.getElementById("codingScreen")
+        .classList.add("hidden");
+
+    document.getElementById("resultScreen")
+        .classList.remove("hidden");
+
+
+    document.getElementById("progress")
+        .style.width = "100%";
+
+
+    calculateScore();
+
+
+    const status =
+        document.getElementById("completionStatus");
+
+    const backButton =
+        document.getElementById("backButton");
+
+
+    status.innerText =
+        "Saving Round 4 completion...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/round4-complete",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Round 4 completed:",
+            data
+        );
+
+
+        status.innerText =
+            "✅ Round 4 completed successfully!";
+
+
+        backButton.disabled = false;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Round 4 completion error:",
+            error
+        );
+
+
+        status.innerText =
+            "❌ Could not save Round 4 completion.";
+
+        backButton.disabled = false;
+
+    }
+
+}
+
+
+/* =========================================
+   SCORE
+========================================= */
+
+function calculateScore() {
+
+    let passed = 0;
+
+
+    results.forEach(function (result) {
+
+        if (result === true) {
+            passed++;
+        }
+
+    });
+
+
+    const score =
+        Math.round(
+            (passed / questions.length) * 100
+        );
+
+
+    document.getElementById("score")
+        .innerText = score;
+
+
+    document.getElementById("testSummary")
+        .innerText =
+        passed +
+        " out of " +
+        questions.length +
+        " coding problems passed.";
+
+
+    if (score >= 80) {
+
+        document.getElementById("problemSummary")
+            .innerText =
+            "Strong problem-solving performance.";
+
+
+        document.getElementById("feedback")
+            .innerText =
+            "Excellent effort! Keep practising arrays, strings, loops and functions.";
+
+    }
+
+    else if (score >= 50) {
+
+        document.getElementById("problemSummary")
+            .innerText =
+            "You have a basic understanding of programming problem solving.";
+
+
+        document.getElementById("feedback")
+            .innerText =
+            "Good start. Practise more coding problems.";
+
+    }
+
+    else {
+
+        document.getElementById("problemSummary")
+            .innerText =
+            "More coding practice is recommended.";
+
+
+        document.getElementById("feedback")
+            .innerText =
+            "Practise basic programming concepts such as loops, arrays, strings and functions.";
+
+    }
+
+}
+
+
+/* =========================================
+   BACK TO ROUNDS
+========================================= */
+
+function goToRounds() {
+
+    allowExit = true;
+
+    window.location.href = "/rounds";
+
+}
+
+</script>
+
+</body>
+</html>
