@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PrepNova AI - Interview Result</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0715;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 34px;
+            color: #c084fc;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 15px;
+        }
+
+        .student-card {
+            background: #151022;
+            border: 1px solid #2d2145;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .student-card h2 {
+            color: #e9d5ff;
+            margin-bottom: 15px;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .info-box {
+            background: #0f0a1c;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .info-box span {
+            display: block;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .info-box strong {
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .overall {
+            background: linear-gradient(135deg, #24133d, #171024);
+            border: 1px solid #6336a3;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .overall h2 {
+            color: #d8b4fe;
+            margin-bottom: 15px;
+        }
+
+        .score {
+            font-size: 64px;
+            font-weight: bold;
+            color: #c084fc;
+            margin-bottom: 8px;
+        }
+
+        .readiness {
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .overall p {
+            color: #aaa;
+        }
+
+        .section {
+            background: #151022;
+            border: 1px solid #2d2145;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: #d8b4fe;
+            margin-bottom: 20px;
+        }
+
+        .round-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .round-card {
+            background: #0f0a1c;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #2d2145;
+        }
+
+        .round-card h3 {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .round-score {
+            font-size: 28px;
+            font-weight: bold;
+            color: #c084fc;
+        }
+
+        .performance-item {
+            margin-bottom: 20px;
+        }
+
+        .performance-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .performance-top span {
+            color: #ddd;
+        }
+
+        .performance-top strong {
+            color: #c084fc;
+        }
+
+        .bar {
+            width: 100%;
+            height: 12px;
+            background: #29213a;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: var(--score);
+            background: #a855f7;
+            border-radius: 20px;
+        }
+
+        .areas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .area-box {
+            background: #0f0a1c;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .area-box h3 {
+            margin-bottom: 12px;
+            color: #d8b4fe;
+        }
+
+        .area-box ul {
+            padding-left: 20px;
+        }
+
+        .area-box li {
+            color: #bbb;
+            margin-bottom: 8px;
+        }
+
+        .recommendations {
+            padding-left: 20px;
+        }
+
+        .recommendations li {
+            color: #bbb;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 13px 25px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            background: #9333ea;
+            color: white;
+        }
+
+        button:hover {
+            background: #7e22ce;
+        }
+
+        @media (max-width: 800px) {
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+
+            .round-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .areas {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 15px;
+            }
+
+            .round-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score {
+                font-size: 48px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🎯 PrepNova AI</h1>
+        <p>AI-Intelligent Mock Interview & Career Readiness System</p>
+    </div>
+
+    <!-- STUDENT DETAILS -->
+    <div class="student-card">
+        <h2>Student Details</h2>
+
+        <div class="student-info">
+
+            <div class="info-box">
+                <span>Name</span>
+                <strong>{{ name }}</strong>
+            </div>
+
+            <div class="info-box">
+                <span>Department</span>
+                <strong>{{ department }}</strong>
+            </div>
+
+            <div class="info-box">
+                <span>Skills</span>
+                <strong>{{ skills }}</strong>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- OVERALL SCORE -->
+    <div class="overall">
+
+        <h2>Overall Performance</h2>
+
+        <div class="score">
+            {{ overall }}%
+        </div>
+
+        <div class="readiness">
+            {{ readiness }}
+        </div>
+
+        <p>Your performance is calculated from all completed assessment rounds.</p>
+
+    </div>
+
+
+    <!-- ROUND SCORES -->
+    <div class="section">
+
+        <h2>📊 Round-wise Performance</h2>
+
+        <div class="round-grid">
+
+            {% for item in round_data %}
+
+            <div class="round-card">
+
+                <h3>{{ item.name }}</h3>
+
+                <div class="round-score">
+                    {{ item.score }}%
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- PERFORMANCE -->
+    <div class="section">
+
+        <h2>📈 Performance Analysis</h2>
+
+        {% for item in performance %}
+
+        <div class="performance-item">
+
+            <div class="performance-top">
+                <span>{{ item.name }}</span>
+                <strong>{{ item.score }}%</strong>
+            </div>
+
+            <div class="bar">
+                <div
+                    class="bar-fill"
+                    style="--score: {{ item.score }}%;">
+                </div>
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- STRENGTHS AND WEAK AREAS -->
+    <div class="section">
+
+        <h2>🔍 Performance Insights</h2>
+
+        <div class="areas">
+
+            <div class="area-box">
+
+                <h3>💪 Strength Areas</h3>
+
+                <ul>
+
+                    {% for area in strong_areas %}
+                    <li>{{ area }}</li>
+                    {% else %}
+                    <li>Complete more rounds to identify your strengths.</li>
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+
+            <div class="area-box">
+
+                <h3>📚 Areas to Improve</h3>
+
+                <ul>
+
+                    {% for area in weak_areas %}
+                    <li>{{ area }}</li>
+                    {% else %}
+                    <li>Keep practicing to identify improvement areas.</li>
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECOMMENDATIONS -->
+    <div class="section">
+
+        <h2>🚀 Recommendations</h2>
+
+        <ul class="recommendations">
+
+            {% for recommendation in recommendations %}
+            <li>{{ recommendation }}</li>
+            {% else %}
+            <li>Continue practicing aptitude, technical and interview skills.</li>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+
+    <!-- BUTTONS -->
+    <div class="buttons">
+
+        <button onclick="window.print()">
+            🖨️ Print Result
+        </button>
+
+        <button onclick="window.location.href='/'">
+            🏠 Home
+        </button>
+
+    </div>
+
+</div>
+
+</body>
+</html>
