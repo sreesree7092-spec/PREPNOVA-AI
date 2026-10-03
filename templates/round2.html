@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PREPNOVA AI - Round 2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{min-height:100vh;background:linear-gradient(135deg,#10002b,#240046,#3c096c);color:white}
+.container{width:90%;max-width:900px;margin:auto;padding:30px 0}
+.header{text-align:center;margin-bottom:25px}.header h1{font-size:32px;color:#fff}.header p{margin-top:8px;color:#d8b4fe}
+.student-box,.interview-box,.result-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:30px;backdrop-filter:blur(10px);box-shadow:0 10px 35px rgba(0,0,0,.3)}
+.student-box{margin-bottom:20px}.student-box h2{text-align:center;margin-bottom:25px;color:#d8b4fe}
+.student-info{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.info-card{background:rgba(168,85,247,.15);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:15px}
+.info-title{color:#c4b5fd;font-size:14px;margin-bottom:6px}.info-value{font-size:17px;font-weight:bold;color:white}
+.skills-box{margin-top:18px;background:rgba(255,255,255,.06);padding:18px;border-radius:12px}
+.skills-title{color:#c4b5fd;margin-bottom:10px}.skill-tag{display:inline-block;background:#7e22ce;padding:7px 12px;margin:4px;border-radius:20px;font-size:14px}
+.personalized{margin-top:18px;text-align:center;color:#ddd6fe;line-height:1.6}
+.top-bar{display:flex;justify-content:space-between;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.badge{background:rgba(168,85,247,.25);padding:10px 15px;border-radius:10px}.timer{background:#7e22ce;padding:10px 18px;border-radius:10px;font-weight:bold}
+.progress{width:100%;height:8px;background:rgba(255,255,255,.15);border-radius:10px;margin:15px 0 25px}
+.progress-bar{height:100%;width:0%;background:#c084fc;border-radius:10px;transition:width .3s}
+.question-number{color:#d8b4fe;margin-bottom:10px}.question{font-size:23px;line-height:1.5;margin-bottom:25px}
+.options{display:grid;gap:12px}.option{padding:15px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;cursor:pointer;transition:.2s}
+.option:hover{background:rgba(168,85,247,.25)}.option.selected{background:rgba(168,85,247,.5);border-color:#d8b4fe}
+.next-btn{width:100%;margin-top:25px;background:#7e22ce;color:white;border:none;border-radius:10px;padding:13px 22px;font-size:15px;font-weight:bold;cursor:pointer}
+.next-btn:hover{background:#6d28d9}.next-btn:disabled{opacity:.6;cursor:not-allowed}
+.warning{margin-top:18px;color:#fca5a5;min-height:25px;text-align:center}.result-box{text-align:center}
+.score{font-size:55px;font-weight:bold;color:#d8b4fe;margin:20px}.result-button{display:inline-block;margin-top:25px;padding:14px 25px;border:none;border-radius:10px;background:#22c55e;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+.result-button:hover{background:#16a34a}.hidden{display:none!important}.info{margin-top:15px;color:#ddd;line-height:1.6}
+@media(max-width:600px){.container{width:94%}.question{font-size:19px}.student-info{grid-template-columns:1fr}.student-box,.interview-box,.result-box{padding:20px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header"><h1>🤖 PREPNOVA AI</h1><p>Round 2 - Personalized Technical Interview</p></div>
+
+  <div class="student-box" id="studentBox">
+    <h2>🎯 Your Personalized Interview</h2>
+    <div class="student-info">
+      <div class="info-card"><div class="info-title">👤 Student Name</div><div class="info-value" id="studentName">Loading...</div></div>
+      <div class="info-card"><div class="info-title">🏫 Department</div><div class="info-value" id="department">Loading...</div></div>
+    </div>
+    <div class="skills-box"><div class="skills-title">📄 Skills detected from your resume</div><div id="skillsContainer">Loading resume skills...</div></div>
+    <div class="personalized">🤖 Questions will be selected according to your <b>department</b> and <b>resume skills</b>.<br>This is a personalized technical assessment.</div>
+    <button class="next-btn" id="startButton" onclick="startInterview()">🚀 Start Personalized Round 2</button>
+  </div>
+
+  <div class="interview-box hidden" id="interviewBox">
+    <div class="top-bar">
+      <div class="badge">👤 <span id="displayName"></span></div>
+      <div class="badge">🏫 <span id="displayDepartment"></span></div>
+      <div class="timer">⏱️ <span id="timer">60</span> s</div>
+    </div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="question-number" id="questionNumber">Question 1</div>
+    <div class="question" id="question">Question loading...</div>
+    <div class="options" id="options"></div>
+    <button class="next-btn" id="nextButton" onclick="nextQuestion()">Next Question →</button>
+    <div class="warning" id="warning" role="status" aria-live="polite"></div>
+  </div>
+
+  <div class="result-box hidden" id="resultBox">
+    <h2>🎉 Round 2 Completed!</h2>
+    <div class="score"><span id="finalScore">0</span> / <span id="totalQuestions">0</span></div>
+    <p id="feedback"></p>
+    <div class="info">
+      <p>👤 Student: <b id="resultName"></b></p>
+      <p>🏫 Department: <b id="resultDepartment"></b></p>
+      <p>📄 Resume-based assessment completed</p>
+    </div>
+    <button class="result-button" onclick="goToRounds()">🏠 Back to Rounds</button>
+    <p class="info">Your score has been saved. Continue to Round 3 from the rounds page.</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* Student data supplied by Flask */
+const studentName = {{ name|tojson }};
+const department = {{ department|tojson }};
+const rawResumeSkills = {{ skills|tojson }};
+const resumeSkills = Array.isArray(rawResumeSkills)
+  ? rawResumeSkills.filter(skill => typeof skill === "string")
+  : [];
+
+document.getElementById("studentName").innerText = studentName || "Student";
+document.getElementById("department").innerText = department || "Not Available";
+
+function displaySkills() {
+  const container = document.getElementById("skillsContainer");
+  container.innerHTML = "";
+  if (resumeSkills.length) {
+    resumeSkills.forEach(skill => {
+      const span = document.createElement("span");
+      span.className = "skill-tag";
+      span.innerText = skill;
+      container.appendChild(span);
+    });
+  } else {
+    container.innerHTML = "<span class='info'>No specific skills detected from resume.</span>";
+  }
+}
+displaySkills();
+
+/* Department-wise question bank */
+const questionBank = {
+  "AI&DS": [
+    {skill:"python",q:"What is the difference between a list and a tuple in Python?",options:["Both are immutable","List is mutable and tuple is immutable","Tuple is mutable and list is immutable","There is no difference"],answer:1},
+    {skill:"python",q:"Which keyword is used to define a function in Python?",options:["function","define","def","fun"],answer:2},
+    {skill:"machine learning",q:"Which type of learning uses labelled training data?",options:["Unsupervised Learning","Supervised Learning","Reinforcement Learning","Random Learning"],answer:1},
+    {skill:"machine learning",q:"What is overfitting in Machine Learning?",options:["Model performs poorly on training data","Model learns training data too closely","Model has no data","Model does not train"],answer:1},
+    {skill:"data analytics",q:"Which Python library is commonly used for data analysis?",options:["Pandas","Flask","React","Bootstrap"],answer:0},
+    {skill:"sql",q:"Which SQL command is used to retrieve data from a table?",options:["GET","FETCH","SELECT","SHOWALL"],answer:2},
+    {skill:"html",q:"Which HTML tag is used to create a hyperlink?",options:["<link>","<a>","<href>","<url>"],answer:1},
+    {skill:"java",q:"Which concept allows a class to acquire properties from another class?",options:["Encapsulation","Inheritance","Polymorphism","Abstraction"],answer:1},
+    {skill:"javascript",q:"Which keyword is used to declare a variable that cannot be reassigned in JavaScript?",options:["var","let","const","static"],answer:2},
+    {skill:"flask",q:"Flask is mainly used for developing what?",options:["Web applications","Operating systems","Hardware circuits","Database servers only"],answer:0}
+  ],
+  "CSE": [
+    {skill:"java",q:"What is inheritance in Java?",options:["Creating objects","Acquiring properties from another class","Deleting a class","Creating variables"],answer:1},
+    {skill:"python",q:"Which keyword is used to define a function in Python?",options:["function","def","fun","define"],answer:1},
+    {skill:"dsa",q:"Which data structure follows FIFO?",options:["Stack","Queue","Tree","Graph"],answer:1},
+    {skill:"dbms",q:"What does DBMS stand for?",options:["Data Backup Management System","Database Management System","Data Binary Management System","Database Machine System"],answer:1},
+    {skill:"sql",q:"Which command is used to retrieve records from a database?",options:["INSERT","DELETE","SELECT","UPDATE"],answer:2},
+    {skill:"html",q:"Which tag creates a hyperlink in HTML?",options:["<a>","<p>","<h1>","<link>"],answer:0},
+    {skill:"os",q:"What is the main purpose of an operating system?",options:["Only browsing","Manage hardware and software resources","Only programming","Only storing files"],answer:1},
+    {skill:"networking",q:"What does IP stand for?",options:["Internet Protocol","Internet Program","Internal Process","Internet Provider"],answer:0}
+,
+    {skill:"algorithms",q:"What is the time complexity of binary search on a sorted array?",options:["O(n)","O(log n)","O(n²)","O(1) always"],answer:1},
+    {skill:"data structures",q:"Which data structure is commonly used for function-call management?",options:["Queue","Stack","Graph","Hash table"],answer:1}
+  ],
+  "ECE": [
+    {skill:"electronics",q:"What is a diode primarily used for?",options:["Allowing current mainly in one direction","Storing files","Increasing memory","Running software"],answer:0},
+    {skill:"digital electronics",q:"Which gate gives HIGH output only when both inputs are HIGH?",options:["OR","NOT","AND","XOR"],answer:2},
+    {skill:"microprocessor",q:"What is the main function of a microprocessor?",options:["Process instructions","Store water","Generate sound only","Display images only"],answer:0},
+    {skill:"communication",q:"What is modulation?",options:["Changing a carrier signal according to information","Deleting data","Storing data","Formatting a computer"],answer:0}
+,
+    {skill:"electronics",q:"What is the unit of capacitance?",options:["Ohm","Farad","Henry","Watt"],answer:1},
+    {skill:"digital electronics",q:"How many bits are in one byte?",options:["4","8","16","32"],answer:1},
+    {skill:"signals",q:"What does ADC stand for?",options:["Analog-to-Digital Converter","Automatic Data Cable","Applied Digital Circuit","Advanced Direct Current"],answer:0},
+    {skill:"communication",q:"Which modulation changes the amplitude of the carrier signal?",options:["AM","FM","PM","PCM only"],answer:0},
+    {skill:"microcontroller",q:"Which device is commonly used to control embedded systems?",options:["Microcontroller","Projector","Scanner","Plotter"],answer:0},
+    {skill:"circuits",q:"In a series circuit, which quantity is the same through every component?",options:["Voltage","Current","Resistance","Power"],answer:1}
+  ],
+  "EEE": [
+    {skill:"electrical",q:"What is Ohm's Law?",options:["V = IR","P = VI","E = mc²","F = ma"],answer:0},
+    {skill:"circuits",q:"Which component stores electrical energy in an electric field?",options:["Resistor","Capacitor","Diode","Switch"],answer:1},
+    {skill:"power systems",q:"What is the purpose of a transformer?",options:["Change AC voltage level","Store software","Convert text","Control a keyboard"],answer:0}
+,
+    {skill:"electrical",q:"What is the SI unit of electrical power?",options:["Volt","Ampere","Watt","Ohm"],answer:2},
+    {skill:"circuits",q:"In a parallel circuit, which quantity is the same across each branch?",options:["Current","Voltage","Resistance","Power"],answer:1},
+    {skill:"machines",q:"Which machine converts electrical energy into mechanical energy?",options:["Generator","Motor","Transformer","Rectifier"],answer:1},
+    {skill:"power systems",q:"What is the standard frequency of AC supply in India?",options:["25 Hz","50 Hz","60 Hz","100 Hz"],answer:1},
+    {skill:"electrical",q:"Which instrument measures electric current?",options:["Voltmeter","Ammeter","Ohmmeter only","Watt-hour meter"],answer:1},
+    {skill:"electronics",q:"A rectifier converts AC into what?",options:["DC","Mechanical energy","Sound","Heat only"],answer:0},
+    {skill:"safety",q:"What is the main purpose of earthing?",options:["Increase voltage","Provide a safe path for fault current","Store charge","Reduce frequency"],answer:1}
+  ],
+  "MECH": [
+    {skill:"thermodynamics",q:"What does thermodynamics deal with?",options:["Heat and energy","Computer networks","Database queries","Web pages"],answer:0},
+    {skill:"manufacturing",q:"Which process removes material using a cutting tool?",options:["Casting","Machining","Welding","Forging"],answer:1},
+    {skill:"mechanics",q:"Newton's second law is represented by:",options:["F = ma","V = IR","P = VI","E = mc²"],answer:0}
+,
+    {skill:"thermodynamics",q:"Which law states that energy cannot be created or destroyed?",options:["First law of thermodynamics","Newton’s third law","Ohm’s law","Hooke’s law"],answer:0},
+    {skill:"manufacturing",q:"Which process joins metals by melting their edges or adding filler material?",options:["Casting","Welding","Turning","Milling"],answer:1},
+    {skill:"materials",q:"Which property describes resistance to indentation or scratching?",options:["Hardness","Ductility","Elasticity","Malleability"],answer:0},
+    {skill:"mechanics",q:"What is the SI unit of force?",options:["Joule","Newton","Pascal","Watt"],answer:1},
+    {skill:"fluid mechanics",q:"Which instrument is used to measure pressure?",options:["Manometer","Thermometer","Tachometer","Caliper"],answer:0},
+    {skill:"design",q:"What does CAD stand for in engineering?",options:["Computer-Aided Design","Central Applied Drawing","Control Analysis Device","Computer Assembly Data"],answer:0},
+    {skill:"manufacturing",q:"Which process shapes metal by compressive force using dies?",options:["Forging","Drilling","Painting","Grinding only"],answer:0}
+  ],
+  "CIVIL": [
+    {skill:"civil",q:"What is the main purpose of a foundation?",options:["Transfer building load to soil","Decorate the building","Paint the building","Increase window size"],answer:0},
+    {skill:"concrete",q:"Which material is commonly used as a binder in concrete?",options:["Cement","Wood","Glass","Plastic"],answer:0},
+    {skill:"surveying",q:"What is surveying mainly used for?",options:["Measuring and mapping land","Programming","Database management","Web designing"],answer:0}
+,
+    {skill:"concrete",q:"What is the main purpose of curing concrete?",options:["Improve hydration and strength development","Change its colour only","Remove all cement","Make it lighter immediately"],answer:0},
+    {skill:"surveying",q:"Which instrument is commonly used to measure horizontal and vertical angles?",options:["Theodolite","Barometer","Ammeter","Thermometer"],answer:0},
+    {skill:"structures",q:"Which structural member primarily carries loads horizontally across a span?",options:["Beam","Column","Pile","Footing"],answer:0},
+    {skill:"materials",q:"Which test is commonly used to assess the workability of fresh concrete?",options:["Slump test","Tensile test only","Sieve test","Impact test"],answer:0},
+    {skill:"soil mechanics",q:"What does soil compaction generally do?",options:["Increases air voids","Increases soil density by reducing air voids","Turns soil into cement","Removes all moisture"],answer:1},
+    {skill:"construction",q:"Which drawing shows the top view of a building layout?",options:["Plan","Elevation","Section only","Perspective only"],answer:0},
+    {skill:"transportation",q:"What is the primary purpose of road camber?",options:["Drain rainwater from the road surface","Increase building height","Store water","Reduce road width"],answer:0}
+  ],
+  "CYBER": [
+    {skill:"cyber security",q:"What is phishing?",options:["A social engineering attack","A programming language","A database","A network cable"],answer:0},
+    {skill:"cryptography",q:"What is encryption used for?",options:["Protecting information","Increasing screen brightness","Deleting hardware","Creating websites"],answer:0},
+    {skill:"networking",q:"What does VPN commonly provide?",options:["Encrypted network connection","Extra RAM","Database storage","CPU cooling"],answer:0}
+,
+    {skill:"cyber security",q:"What is multi-factor authentication?",options:["Using two or more verification factors","Using one short password only","Sharing credentials","Disabling login checks"],answer:0},
+    {skill:"networking",q:"What does a firewall do?",options:["Filters network traffic based on rules","Creates computer hardware","Repairs a monitor","Increases battery size"],answer:0},
+    {skill:"cryptography",q:"Which security goal ensures data is not changed without authorization?",options:["Integrity","Availability only","Compression","Formatting"],answer:0},
+    {skill:"cyber security",q:"Why should software security updates be installed?",options:["To fix known vulnerabilities","To reveal passwords","To disable protection","To remove all backups"],answer:0},
+    {skill:"networking",q:"What is the purpose of HTTPS?",options:["Encrypt communication between browser and website","Increase screen resolution","Store files locally only","Replace an operating system"],answer:0},
+    {skill:"security",q:"What is a brute-force attack?",options:["Trying many possible passwords or keys","Physically cleaning a computer","Compressing files","Backing up data"],answer:0},
+    {skill:"cyber security",q:"What should you do with an unexpected email attachment?",options:["Open it immediately","Verify the sender and scan before opening","Forward it to everyone","Disable antivirus"],answer:1}
+  ],
+  "MCA": [
+    {skill:"programming",q:"What is a variable?",options:["A storage location for data","A computer monitor","A network cable","An operating system"],answer:0},
+    {skill:"dbms",q:"Which language is commonly used to interact with relational databases?",options:["SQL","HTML","CSS","XML"],answer:0},
+    {skill:"web",q:"Which technology is used to structure web pages?",options:["HTML","SQL","Python only","C++ only"],answer:0}
+,
+    {skill:"programming",q:"What is the purpose of a loop in programming?",options:["Repeat a block of code","Delete the operating system","Design a circuit","Encrypt every file"],answer:0},
+    {skill:"dbms",q:"Which SQL clause filters rows based on a condition?",options:["WHERE","ORDER BY","GROUP BY only","CREATE"],answer:0},
+    {skill:"web",q:"What is CSS mainly used for?",options:["Styling web pages","Querying databases","Managing CPU registers","Compiling Java"],answer:0},
+    {skill:"programming",q:"What is an array commonly used to store?",options:["A collection of values under one name","Only one character forever","A network connection","A database server"],answer:0},
+    {skill:"software engineering",q:"What is the main purpose of software testing?",options:["Find defects and check expected behaviour","Make code longer","Remove documentation","Replace requirements"],answer:0},
+    {skill:"operating systems",q:"What is a process in an operating system?",options:["A program in execution","A type of keyboard","A database table","A network cable"],answer:0},
+    {skill:"networking",q:"Which protocol is commonly used to load web pages?",options:["HTTP","SMTP only","FTP only","Bluetooth"],answer:0}
+  ]
+};
+
+let questions = [];
+let currentQuestion = 0;
+let score = 0;
+let selectedAnswer = null;
+let timeLeft = 60;
+let timer = null;
+let violations = 0;
+let interviewStarted = false;
+let finishRequestInProgress = false;
+let interviewFinished = false;
+let lastScorePercentage = 0;
+
+function getDepartmentKey() {
+  const dept = (department || "").toUpperCase().replace(/[^A-Z0-9&]/g, "");
+  if (dept.includes("CYBER")) return "CYBER";
+  if (dept.includes("MECH")) return "MECH";
+  if (dept.includes("CIVIL")) return "CIVIL";
+  if (dept.includes("MCA")) return "MCA";
+  if (dept.includes("ECE") || dept.includes("ELECTRONICSANDCOMMUNICATION")) return "ECE";
+  if (dept.includes("EEE") || dept.includes("ELECTRICALANDELECTRONICS")) return "EEE";
+  if (dept.includes("AI&DS") || dept.includes("AIDS") || dept.includes("AIANDDS") || (dept.includes("ARTIFICIALINTELLIGENCE") && dept.includes("DATASCIENCE"))) return "AI&DS";
+  if (dept.includes("CSE") || dept.includes("COMPUTERSCIENCE") || dept.includes("COMPUTERENGINEERING")) return "CSE";
+  return "";
+}
+
+function startInterview() {
+  const departmentKey = getDepartmentKey();
+  const departmentQuestions = questionBank[departmentKey] || [];
+  if (!departmentQuestions.length) {
+    alert("No technical questions are configured for this department: " + (department || "Not provided"));
+    return;
+  }
+
+  const normalizedSkills = resumeSkills.map(skill => skill.toLowerCase().trim()).filter(Boolean);
+  const skillQuestions = departmentQuestions.filter(q =>
+    normalizedSkills.some(studentSkill =>
+      studentSkill.includes(q.skill.toLowerCase()) ||
+      q.skill.toLowerCase().includes(studentSkill)
+    )
+  );
+
+  // Keep resume-related questions first, then shuffle the remaining questions.
+  const remainingQuestions = departmentQuestions.filter(q => !skillQuestions.includes(q));
+  for (let i = remainingQuestions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [remainingQuestions[i], remainingQuestions[j]] = [remainingQuestions[j], remainingQuestions[i]];
+  }
+  questions = [...skillQuestions, ...remainingQuestions].slice(0, 10);
+
+  if (!questions.length) {
+    alert("No technical questions available for this department.");
+    return;
+  }
+
+  document.getElementById("displayName").innerText = studentName || "Student";
+  document.getElementById("displayDepartment").innerText = department || "Not Available";
+  document.getElementById("studentBox").classList.add("hidden");
+  document.getElementById("interviewBox").classList.remove("hidden");
+
+  interviewStarted = true;
+  interviewFinished = false;
+  finishRequestInProgress = false;
+  currentQuestion = 0;
+  score = 0;
+  violations = 0;
+  document.getElementById("nextButton").disabled = false;
+  document.getElementById("nextButton").innerText = "Next Question →";
+
+  if (document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  }
+  initializeAudio();
+  loadQuestion();
+}
+
+function loadQuestion() {
+  clearInterval(timer);
+  selectedAnswer = null;
+  timeLeft = 60;
+  const q = questions[currentQuestion];
+  if (!q) {
+    finishInterview();
+    return;
+  }
+
+  document.getElementById("questionNumber").innerText =
+    "Question " + (currentQuestion + 1) + " of " + questions.length;
+  document.getElementById("question").innerText = q.q;
+  document.getElementById("progressBar").style.width =
+    (((currentQuestion + 1) / questions.length) * 100) + "%";
+  document.getElementById("timer").innerText = timeLeft;
+  document.getElementById("timer").style.background = "#7e22ce";
+
+  const options = document.getElementById("options");
+  options.innerHTML = "";
+  q.options.forEach((option, index) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerText = String.fromCharCode(65 + index) + ". " + option;
+    div.onclick = () => selectAnswer(index);
+    options.appendChild(div);
+  });
+  document.getElementById("warning").innerText = "";
+  document.getElementById("nextButton").innerText =
+    currentQuestion === questions.length - 1 ? "Finish Round 2 →" : "Next Question →";
+  startTimer();
+}
+
+function selectAnswer(index) {
+  if (!interviewStarted || finishRequestInProgress) return;
+  selectedAnswer = index;
+  document.querySelectorAll(".option").forEach((option, i) => {
+    option.classList.toggle("selected", i === index);
+  });
+}
+
+function startTimer() {
+  clearInterval(timer);
+  timer = setInterval(() => {
+    if (!interviewStarted || interviewFinished || finishRequestInProgress) {
+      clearInterval(timer);
+      return;
+    }
+    timeLeft--;
+    document.getElementById("timer").innerText = timeLeft;
+    if (timeLeft <= 10) document.getElementById("timer").style.background = "#dc2626";
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      nextQuestion();
+    }
+  }, 1000);
+}
+
+function nextQuestion() {
+  if (!interviewStarted || interviewFinished || finishRequestInProgress) return;
+  clearInterval(timer);
+
+  const q = questions[currentQuestion];
+  if (!q) {
+    finishInterview();
+    return;
+  }
+
+  if (selectedAnswer !== null && selectedAnswer === q.answer) score++;
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+    loadQuestion();
+  } else {
+    finishInterview();
+  }
+}
+
+async function finishInterview() {
+  if (finishRequestInProgress || interviewFinished) return;
+  finishRequestInProgress = true;
+  clearInterval(timer);
+
+  const warning = document.getElementById("warning");
+  const nextButton = document.getElementById("nextButton");
+  nextButton.disabled = true;
+  nextButton.innerText = "Saving result...";
+  warning.innerText = "Saving your Round 2 result...";
+  lastScorePercentage = questions.length > 0
+    ? Math.round((score / questions.length) * 100)
+    : 0;
+
+  try {
+    const response = await fetch("/round2-complete", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      credentials: "same-origin",
+      body: JSON.stringify({score: lastScorePercentage})
+    });
+
+    let data = {};
+    try { data = await response.json(); } catch (parseError) {}
+
+    if (!response.ok || data.success !== true) {
+      throw new Error(data.error || ("Server returned HTTP " + response.status));
+    }
+
+    interviewFinished = true;
+    interviewStarted = false;
+    document.getElementById("interviewBox").classList.add("hidden");
+    document.getElementById("resultBox").classList.remove("hidden");
+    document.getElementById("finalScore").innerText = score;
+    document.getElementById("totalQuestions").innerText = questions.length;
+    document.getElementById("resultName").innerText = studentName || "Student";
+    document.getElementById("resultDepartment").innerText = department || "Not Available";
+
+    let feedback = "";
+    if (score >= 8) feedback = "Excellent technical performance! 🔥";
+    else if (score >= 5) feedback = "Good performance. Keep improving your technical skills. 👍";
+    else feedback = "Keep practicing your technical concepts and try again. 💪";
+    document.getElementById("feedback").innerText = feedback;
+
+    if (document.fullscreenElement && document.exitFullscreen) {
+      try { await document.exitFullscreen(); } catch (fullscreenError) {}
+    }
+  } catch (error) {
+    console.error("Round 2 result save failed:", error);
+    warning.innerText = "⚠️ Could not save the result. Check your connection and click “Retry Save”.";
+    nextButton.disabled = false;
+    nextButton.innerText = "Retry Save";
+    nextButton.onclick = retrySaveResult;
+  } finally {
+    finishRequestInProgress = false;
+  }
+}
+
+async function retrySaveResult() {
+  if (finishRequestInProgress || interviewFinished) return;
+  finishRequestInProgress = true;
+  clearInterval(timer);
+  const warning = document.getElementById("warning");
+  const nextButton = document.getElementById("nextButton");
+  nextButton.disabled = true;
+  nextButton.innerText = "Saving result...";
+  warning.innerText = "Retrying Round 2 result save...";
+  try {
+    const response = await fetch("/round2-complete", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      credentials: "same-origin",
+      body: JSON.stringify({score: lastScorePercentage})
+    });
+    let data = {};
+    try { data = await response.json(); } catch (parseError) {}
+    if (!response.ok || data.success !== true) {
+      throw new Error(data.error || ("Server returned HTTP " + response.status));
+    }
+
+    interviewFinished = true;
+    interviewStarted = false;
+    document.getElementById("interviewBox").classList.add("hidden");
+    document.getElementById("resultBox").classList.remove("hidden");
+    document.getElementById("finalScore").innerText = score;
+    document.getElementById("totalQuestions").innerText = questions.length;
+    document.getElementById("resultName").innerText = studentName || "Student";
+    document.getElementById("resultDepartment").innerText = department || "Not Available";
+    document.getElementById("feedback").innerText =
+      score >= 8 ? "Excellent technical performance! 🔥" :
+      score >= 5 ? "Good performance. Keep improving your technical skills. 👍" :
+      "Keep practicing your technical concepts and try again. 💪";
+    if (document.fullscreenElement && document.exitFullscreen) {
+      try { await document.exitFullscreen(); } catch (fullscreenError) {}
+    }
+  } catch (error) {
+    console.error("Round 2 result retry failed:", error);
+    warning.innerText = "⚠️ Save failed again. Please check that Flask is running, then click Retry Save.";
+    nextButton.disabled = false;
+    nextButton.innerText = "Retry Save";
+  } finally {
+    finishRequestInProgress = false;
+  }
+}
+
+/* Tab/fullscreen warnings are deterrents, not a guarantee against cheating. */
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && interviewStarted) {
+    violations++;
+    document.getElementById("warning").innerText = "⚠️ Warning! Tab switching detected.";
+    playWarningSound();
+  }
+});
+
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement && interviewStarted) {
+    violations++;
+    document.getElementById("warning").innerText = "⚠️ Warning! Please stay in fullscreen mode.";
+    playWarningSound();
+  }
+});
+
+let audioContext = null;
+function initializeAudio() {
+  try {
+    if (!audioContext) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) audioContext = new AudioContextClass();
+    }
+    if (audioContext && audioContext.state === "suspended") audioContext.resume();
+  } catch (error) {
+    console.log("Audio initialization unavailable:", error);
+  }
+}
+
+function playWarningSound() {
+  try {
+    initializeAudio();
+    if (!audioContext) return;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.5);
+  } catch (error) {
+    console.log("Warning sound error:", error);
+  }
+}
+
+["copy", "paste", "cut", "contextmenu"].forEach(eventName => {
+  document.addEventListener(eventName, event => {
+    if (interviewStarted) event.preventDefault();
+  });
+});
+
+document.addEventListener("keydown", event => {
+  if (!interviewStarted) return;
+  if (event.ctrlKey || event.metaKey) event.preventDefault();
+  if (event.key === "F12") event.preventDefault();
+  if (event.ctrlKey && event.shiftKey && ["I", "J", "C"].includes(event.key.toUpperCase())) {
+    event.preventDefault();
+  }
+});
+
+function goToRounds() {
+  // This route displays the rounds page and preserves the Flask session.
+  window.location.href = "/rounds";
+}
+</script>
+</body>
+</html>
